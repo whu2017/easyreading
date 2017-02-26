@@ -8,10 +8,4 @@ addons:
   apt:
     packages:
       - sshpass
-script:
-  - "[ $TRAVIS_BRANCH == \"master\" ] && sshpass -p \"${MASTER_PASS}\" ssh -o \"StrictHostKeyChecking no\" master@oott.me \"/bin/sh ~/server/build.sh\""
-  - "[ $TRAVIS_BRANCH == \"develop\" ] && sshpass -p \"${DEVELOP_PASS}\" ssh -o \"StrictHostKeyChecking no\" develop@oott.me \"/bin/sh ~/server/build.sh\""
-  - "[ $TRAVIS_BRANCH == \"xugengtao\" ] && sshpass -p \"${XUGENGTAO_PASS}\" ssh -o \"StrictHostKeyChecking no\" xugengtao@oott.me \"/bin/sh ~/server/build.sh\""
-  - "[ $TRAVIS_BRANCH == \"xuyichao\" ] && sshpass -p \"${XUYICHAO_PASS}\" ssh -o \"StrictHostKeyChecking no\" xuyichao@oott.me \"/bin/sh ~/server/build.sh\""
-  - "[ $TRAVIS_BRANCH == \"liguangjun\" ] && sshpass -p \"${LIGUANGJUN_PASS}\" ssh -o \"StrictHostKeyChecking no\" liguangjun@oott.me \"/bin/sh ~/server/build.sh\""
-  - "[ $TRAVIS_BRANCH == \"guoyaoxing\" ] && sshpass -p \"${GUOYAOXING_PASS}\" ssh -o \"StrictHostKeyChecking no\" guoyaoxing@oott.me \"/bin/sh ~/server/build.sh\""
+script: ".travis/build.sh"
