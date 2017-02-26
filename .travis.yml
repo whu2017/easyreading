@@ -4,5 +4,9 @@ python:
 install:
   - "pip install -r requirements.txt"
   - "pip install -r requirements-test.txt"
+addons:
+  apt:
+    packages:
+      - sshpass
 script:
-  - "[ $TRAVIS_BRANCH == \"guoyaoxing\" ] && ssh -o \"StrictHostKeyChecking no\" master@oott.me \"ls /www\""
+  - "[ $TRAVIS_BRANCH == \"guoyaoxing\" ] && sshpass -p \"${guoyaoxing_password}\" ssh -o \"StrictHostKeyChecking no\" ${guoyaoxing_username}@oott.me \"ls /www\""
