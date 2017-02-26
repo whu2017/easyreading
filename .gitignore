@@ -95,3 +95,4 @@ ENV/
 
 .idea/
 db.sqlite3
+easyreading/local_settings.py
