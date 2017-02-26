@@ -1,0 +1,62 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>随阅易 API</title>
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+
+	<!-- ================== BEGIN BASE CSS STYLE ================== -->
+	<link href="{% static "coloradmin/plugins/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet" />
+	<link href="{% static "coloradmin/plugins/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" />
+	<link href="{% static "coloradmin/css/animate.min.css" %}" rel="stylesheet" />
+	<link href="{% static "coloradmin/css/style.min.css" %}" rel="stylesheet" />
+	<link href="{% static "coloradmin/css/style-responsive.min.css" %}" rel="stylesheet" />
+	<link href="{% static "coloradmin/css/theme/default.css" %}" rel="stylesheet" id="theme" />
+	<!-- ================== END BASE CSS STYLE ================== -->
+</head>
+<body class="pace-top">
+	<!-- begin #page-container -->
+	<div id="page-container" class="fade">
+	    <!-- begin error -->
+        <div class="error">
+            <div class="error-code m-b-10">随阅易 API</div>
+            <div class="error-content">
+                <div class="error-message">当前版本：{{ branch }}</div>
+                <br/>
+                <div>
+                    <a href="{% url "admin:index" %}" class="btn btn-success">管理后台</a>
+                </div>
+            </div>
+        </div>
+        <!-- end error -->
+	</div>
+	<!-- end page container -->
+
+	<!-- ================== BEGIN BASE JS ================== -->
+	<script src="{% static "coloradmin/plugins/jquery/jquery-1.9.1.min.js" %}"></script>
+	<script src="{% static "coloradmin/plugins/jquery/jquery-migrate-1.1.0.min.js" %}"></script>
+	<script src="{% static "coloradmin/plugins/bootstrap/js/bootstrap.min.js" %}"></script>
+	<!--[if lt IE 9]>
+		<script src="{% static "coloradmin/crossbrowserjs/html5shiv.js" %}"></script>
+		<script src="{% static "coloradmin/crossbrowserjs/respond.min.js" %}"></script>
+		<script src="{% static "coloradmin/crossbrowserjs/excanvas.min.js" %}"></script>
+	<![endif]-->
+	<script src="{% static "coloradmin/plugins/slimscroll/jquery.slimscroll.min.js" %}"></script>
+	<script src="{% static "coloradmin/plugins/jquery-cookie/jquery.cookie.js" %}"></script>
+	<!-- ================== END BASE JS ================== -->
+
+	<!-- ================== BEGIN PAGE LEVEL JS ================== -->
+	<script src="{% static "coloradmin/js/apps.min.js" %}"></script>
+	<!-- ================== END PAGE LEVEL JS ================== -->
+
+	<script>
+		$(document).ready(function() {
+			App.init();
+		});
+	</script>
+</body>
+</html>
