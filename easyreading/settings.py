@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',  # Django Rest Framework
 
     'app.index',  # 主页
+    'app.user',  # 用户详情
 ]
 
 MIDDLEWARE = [
