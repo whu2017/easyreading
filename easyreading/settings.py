@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',  # Django Rest Framework
+
     'app.index',  # 主页
 ]
 
