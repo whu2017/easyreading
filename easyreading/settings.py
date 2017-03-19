@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/1.10/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
-from __future__ import unicode_literals
-
 import os
+
+from kombu import Queue
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -34,6 +34,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jet.dashboard',
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
 
     'app.index',  # 主页
     'app.user',  # 用户详情
+    'app.transform',  # 文件格式转换工具
 ]
 
 MIDDLEWARE = [
@@ -129,6 +132,22 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "resource"),
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Celery
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+CELERY_DEFAULT_QUEUE = 'default'
+CELERY_DEFAULT_ROUTING_KEY = 'default'
+CELERY_TASK_RESULT_EXPIRES = 3600
+CELERY_QUEUES = (
+    Queue('default', routing_key='default'),
+)
+CELERYD_TASK_TIME_LIMIT = 600
+CELERY_TIMEZONE = 'Asia/Shanghai'
 
 try:
     from local_settings import *

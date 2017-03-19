@@ -2,3 +2,6 @@ django==1.10.5
 djangorestframework==3.6.2
 django-filter==1.0.1
 markdown==2.6.8
+celery==4.0.2
+redis==2.10.5
+django-jet==1.0.5

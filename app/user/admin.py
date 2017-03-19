@@ -24,7 +24,7 @@ class UserOptionsInline(admin.StackedInline):
 
 
 class UserAdmin(BaseUserAdmin):
-    inlines = (UserProfileInline, UserOptionsInline )
+    inlines = (UserProfileInline, UserOptionsInline, )
 
 
 admin.site.unregister(User)
