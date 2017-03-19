@@ -20,7 +20,7 @@ class Transform(models.Model):
         (STATUS_FAIL, '转换出错'),
     )
 
-    origin = models.FileField(upload_to='media/%Y/%m/%d/')
+    origin = models.FileField(upload_to='transform/%Y/%m/%d/')
     book = models.FileField(blank=True, null=True)
     status = models.IntegerField(choices=STATUS, default=STATUS_PENDING)
     error_message = models.TextField('出错信息')
