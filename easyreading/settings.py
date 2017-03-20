@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/1.10/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
+
+from __future__ import unicode_literals
+
 import os
 
 from kombu import Queue
@@ -34,8 +37,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'jet.dashboard',
-    'jet',
+    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -144,10 +146,24 @@ CELERY_DEFAULT_QUEUE = 'default'
 CELERY_DEFAULT_ROUTING_KEY = 'default'
 CELERY_TASK_RESULT_EXPIRES = 3600
 CELERY_QUEUES = (
-    Queue('default', routing_key='default'),
+    Queue(str('default'), routing_key=str('default')),
 )
 CELERYD_TASK_TIME_LIMIT = 600
 CELERY_TIMEZONE = 'Asia/Shanghai'
+
+# Django Suit
+SUIT_CONFIG = {
+    'ADMIN_NAME': '随阅易管理后台',
+    'MENU_EXCLUDE': ('auth.group', ),
+    'LIST_PER_PAGE': 30,
+    'MENU': (
+        '-',
+        {'label': '转换器', 'icon': 'icon-leaf', 'models': (
+            'app.transform.transform',
+        )},
+        {'label': '用户管理', 'icon': 'icon-lock', 'models': ('auth.user',)},
+    )
+}
 
 try:
     from local_settings import *
