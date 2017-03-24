@@ -37,7 +37,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,8 +46,8 @@ INSTALLED_APPS = [
 
     'rest_framework',  # Django Rest Framework
 
+    'user',  # 用户
     'app.index',  # 主页
-    'app.user',  # 用户详情
     'app.transform',  # 文件格式转换工具
 ]
 
@@ -126,6 +125,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+# User
+AUTH_USER_MODEL = 'user.User'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
@@ -161,7 +163,7 @@ SUIT_CONFIG = {
         {'label': '转换器', 'icon': 'icon-leaf', 'models': (
             'app.transform.transform',
         )},
-        {'label': '用户管理', 'icon': 'icon-lock', 'models': ('auth.user',)},
+        {'label': '用户管理', 'icon': 'icon-lock', 'models': ('user.user',)},
     )
 }
 

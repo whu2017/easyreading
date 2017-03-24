@@ -4,4 +4,4 @@ django-filter==1.0.1
 markdown==2.6.8
 celery==4.0.2
 redis==2.10.5
-django-suit==0.2.24
+shortuuid==0.5.0
