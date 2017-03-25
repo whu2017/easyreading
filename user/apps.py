@@ -8,4 +8,4 @@ from django.apps import AppConfig
 class UserConfig(AppConfig):
     name = "user"
     label = "user"
-    verbose_name = "用户"
+    verbose_name = "系统用户"

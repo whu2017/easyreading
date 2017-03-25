@@ -2,7 +2,6 @@
 
 from __future__ import unicode_literals
 
-import shortuuid
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils import timezone
@@ -10,14 +9,12 @@ from django.utils import timezone
 
 class UserManager(BaseUserManager):
     def _create_user(self, email, phone, password, is_superuser=False, **extra_fields):
-        extra_fields.pop('identifier')
         now = timezone.now()
         if not email and not phone:
             raise ValueError('The given email or phone must be set')
-        identifier = shortuuid.uuid()
         if email:
             email = self.normalize_email(email)
-        user = self.model(identifier=identifier, email=email, phone=phone, is_superuser=is_superuser, is_staff=is_superuser,
+        user = self.model(email=email, phone=phone, is_superuser=is_superuser, is_staff=is_superuser,
                           last_login=now, date_joined=now, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -31,7 +28,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    identifier = models.CharField('用户标识', max_length=64, unique=True)
     email = models.EmailField('Email', max_length=255, blank=True, db_index=True)
     phone = models.CharField('手机号', max_length=20, blank=True, db_index=True)
     is_superuser = models.BooleanField('超级管理员', default=False)
@@ -52,27 +48,24 @@ class User(AbstractBaseUser):
 
     class Meta:
         db_table = 'user'
-        verbose_name = '用户管理'
-        verbose_name_plural = '用户管理'
+        verbose_name = '系统用户'
+        verbose_name_plural = '系统用户'
 
-    USERNAME_FIELD = 'identifier'
+    USERNAME_FIELD = 'id'
     REQUIRED_FIELDS = ['email', 'phone']
 
     def get_full_name(self):
-        return self.identifier
+        if self.email:
+            return self.email
+        if self.phone:
+            return self.phone
+        return '%s' % self.pk
 
     def get_short_name(self):
-        return self.identifier
+        return self.get_full_name()
 
     def __unicode__(self):
-        if self.email and self.phone:
-            return 'ID:%d(%s,%s)' % (self.pk, self.email, self.phone)
-        elif self.email:
-            return 'ID:%d(%s)' % (self.pk, self.email)
-        elif self.phone:
-            return 'ID:%d(%s)' % (self.pk, self.phone)
-        else:
-            return 'ID:%d' % self.pk
+        return self.get_full_name()
 
     def has_perm(self, perm, obj=None):
         return True

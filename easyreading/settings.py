@@ -128,7 +128,6 @@ USE_TZ = True
 # User
 AUTH_USER_MODEL = 'user.User'
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
