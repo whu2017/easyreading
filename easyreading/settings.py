@@ -152,6 +152,18 @@ CELERY_QUEUES = (
 CELERYD_TASK_TIME_LIMIT = 600
 CELERY_TIMEZONE = 'Asia/Shanghai'
 
+# Django Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
 # Django Suit
 SUIT_CONFIG = {
     'ADMIN_NAME': '随阅易管理后台',
