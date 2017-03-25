@@ -9,3 +9,6 @@ class TransformConfig(AppConfig):
     name = "app.transform"
     label = "app.transform"
     verbose_name = "转换器"
+
+    def ready(self):
+        import app.transform.signals
