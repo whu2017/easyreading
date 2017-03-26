@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
 
-from user.serializers import LoginSerializer, PermissionUpdateSerializer
+from user.serializers import LoginSerializer, PermissionUpdateSerializer, PermissionVerifySerializer
 from user.utils import jwt_response_payload_handler
 
 
@@ -52,13 +52,9 @@ class LoginView(UserBaseAPIView):
     serializer_class = LoginSerializer
 
 
-# class VerifyJSONWebToken(JSONWebTokenAPIView):
-#     """
-#     API View that checks the veracity of a token, returning the token if it
-#     is valid.
-#     """
-#     serializer_class = VerifyJSONWebTokenSerializer
-#
-#
+class PermissionVerifyView(UserBaseAPIView):
+    serializer_class = PermissionVerifySerializer
+
+
 class PermissionUpdateView(UserBaseAPIView):
     serializer_class = PermissionUpdateSerializer

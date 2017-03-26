@@ -85,18 +85,15 @@ class PermissionBaseSerializer(Serializer):
         return user
 
 
-# class VerifyJSONWebTokenSerializer(PermissionBaseSerializer):
-#     def validate(self, attrs):
-#         token = attrs['token']
-#
-#         payload = self._check_payload(token=token)
-#         user = self._check_user(payload=payload)
-#
-#         return {
-#             'token': token,
-#             'user': user
-#         }
-#
+class PermissionVerifySerializer(PermissionBaseSerializer):
+    def validate(self, attrs):
+        token = attrs['token']
+        payload = self._check_payload(token=token)
+        user = self._check_user(payload=payload)
+        return {
+            'token': token,
+            'user': user
+        }
 
 
 class PermissionUpdateSerializer(PermissionBaseSerializer):
