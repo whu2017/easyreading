@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 from __future__ import unicode_literals
-
+import datetime
 import os
 
 from kombu import Queue
@@ -162,6 +162,12 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+}
+
+# Django Rest Framework JWT
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
 
 # Django Suit
