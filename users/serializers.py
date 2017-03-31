@@ -47,6 +47,27 @@ class IdentifierCheckSerializer(Serializer):
         return attrs
 
 
+class RegisterSerializer(Serializer):
+    identifier_token = serializers.CharField(max_length=64)
+    code = serializers.IntegerField()
+    password = serializers.CharField(max_length=64)
+    nickname = serializers.CharField(max_length=64, required=False)
+
+    def validate_code(self, value):
+        if value < 100000 or value > 999999:
+            raise serializers.ValidationError('验证码必须为 6 位整数')
+        return value
+
+    def validate(self, attrs):
+        identifier_token = attrs.get('identifier_token')
+        code = attrs.get('code')
+        identifier = User.objects.check_verification_code(identifier_token, settings.FUNCTION_REGISTER, code)
+        if identifier is None:
+            raise serializers.ValidationError('验证码不正确')
+        attrs['identifier'] = identifier
+        return attrs
+
+
 class LoginSerializer(Serializer):
     def __init__(self, *args, **kwargs):
         super(LoginSerializer, self).__init__(*args, **kwargs)

@@ -6,11 +6,12 @@ from datetime import datetime
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_jwt.serializers import jwt_payload_handler, jwt_encode_handler
 from rest_framework_jwt.settings import api_settings
 
 from users.serializers import (
     LoginSerializer, PermissionUpdateSerializer, PermissionVerifySerializer,
-    IdentifierCheckSerializer,
+    IdentifierCheckSerializer, RegisterSerializer,
 )
 from users.utils import jwt_response_payload_handler
 from users.models import User
@@ -90,3 +91,33 @@ class IdentifierCheckView(APIView):
             'available': True,
             'identifier_token': User.objects.add_verification_code(identifier, func),
         })
+
+
+class RegisterView(APIView):
+    permission_classes = ()
+    authentication_classes = ()
+    serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        identifier = serializer.validated_data.get('identifier')
+        password = serializer.validated_data.get('password')
+        nickname = serializer.validated_data.get('nickname', '')
+        if '@' in identifier:
+            user = User.objects.create_user(identifier, '', password)
+        else:
+            user = User.objects.create_user('', identifier, password)
+        user.nickname = nickname
+        user.save()
+
+        # 获取用户 Token 信息
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload),
+        response_data = jwt_response_payload_handler(token, user, request)
+        response = Response(response_data)
+        if api_settings.JWT_AUTH_COOKIE:
+            expiration = (datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA)
+            response.set_cookie(api_settings.JWT_AUTH_COOKIE, response.data['token'], expires=expiration, httponly=True)
+        return response
