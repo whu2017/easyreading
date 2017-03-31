@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from django.conf.urls import url
 
-from user.views import LoginView, PermissionUpdateView, PermissionVerifyView
+from users.views import LoginView, PermissionUpdateView, PermissionVerifyView
 
 
 urlpatterns = [

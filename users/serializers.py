@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 
-from user.compat import get_username_field, Serializer
+from users.compat import get_username_field, Serializer
 
 
 User = get_user_model()
@@ -51,7 +51,7 @@ class LoginSerializer(Serializer):
                 payload = jwt_payload_handler(user)
                 return {
                     'token': jwt_encode_handler(payload),
-                    'user': user
+                    'users': user
                 }
             else:
                 raise serializers.ValidationError('密码不正确')
@@ -92,7 +92,7 @@ class PermissionVerifySerializer(PermissionBaseSerializer):
         user = self._check_user(payload=payload)
         return {
             'token': token,
-            'user': user
+            'users': user
         }
 
 
@@ -104,5 +104,5 @@ class PermissionUpdateSerializer(PermissionBaseSerializer):
         new_payload = jwt_payload_handler(user)
         return {
             'token': jwt_encode_handler(new_payload),
-            'user': user
+            'users': user
         }

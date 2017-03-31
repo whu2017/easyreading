@@ -10,7 +10,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from user.models import User
+from users.models import User
 
 logger = logging.getLogger(__name__)
 

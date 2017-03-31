@@ -8,7 +8,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.core.cache import cache
 from django.utils import timezone
 
-from user.utils import generate_random_key, VerificationCode
+from users.utils import generate_random_key, VerificationCode
 
 
 class UserManager(BaseUserManager):
@@ -85,7 +85,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     class Meta:
-        db_table = 'user'
+        db_table = 'users'
         verbose_name = '系统用户'
         verbose_name_plural = '系统用户'
 

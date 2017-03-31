@@ -8,8 +8,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
 
-from user.serializers import LoginSerializer, PermissionUpdateSerializer, PermissionVerifySerializer
-from user.utils import jwt_response_payload_handler
+from users.serializers import LoginSerializer, PermissionUpdateSerializer, PermissionVerifySerializer
+from users.utils import jwt_response_payload_handler
 
 
 class UserBaseAPIView(APIView):
@@ -37,7 +37,7 @@ class UserBaseAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.object.get('user') or request.user
+        user = serializer.object.get('users') or request.user
         token = serializer.object.get('token')
         response_data = jwt_response_payload_handler(token, user, request)
         response = Response(response_data)

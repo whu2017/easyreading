@@ -6,6 +6,6 @@ from django.apps import AppConfig
 
 
 class UserConfig(AppConfig):
-    name = "user"
-    label = "user"
+    name = "users"
+    label = "users"
     verbose_name = "系统用户"

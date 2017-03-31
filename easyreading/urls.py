@@ -28,7 +28,7 @@ from app.index.views import index_view
 
 urlpatterns = [
     url(r'^$', index_view, name='index'),
-    url(r'^user/', include('user.urls', namespace='user')),
+    url(r'^user/', include('users.urls', namespace='users')),
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', obtain_jwt_token),

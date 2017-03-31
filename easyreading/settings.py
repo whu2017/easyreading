@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 
     'rest_framework',  # Django Rest Framework
 
-    'user',
+    'users',
     'app.index',
     'app.transform',
 ]
@@ -126,7 +126,7 @@ USE_L10N = True
 USE_TZ = True
 
 # User
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'users.User'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
@@ -194,7 +194,7 @@ SUIT_CONFIG = {
         {'label': '转换器', 'icon': 'icon-leaf', 'models': (
             'app.transform.transform',
         )},
-        {'label': '用户管理', 'icon': 'icon-lock', 'models': ('user.user',)},
+        {'label': '用户管理', 'icon': 'icon-lock', 'models': ('users.users',)},
     )
 }
 
