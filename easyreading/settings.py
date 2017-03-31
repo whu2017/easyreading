@@ -259,9 +259,14 @@ DAYU_TEMPLATE_RESET = 'SMS_57680071'.encode('utf8')
 
 # Alibaba SMTP
 SMTP_SERVER = 'smtpdm.aliyun.com'.encode('utf8')
-SMTP_PORT = 25
+SMTP_PORT = 465
 SMTP_FROM = 'easyreading@robot.doraemonext.com'.encode('utf8')
 SMTP_PASSWORD = 'Whu2017Test'.encode('utf8')
+
+# FUNCTION
+FUNCTION_REGISTER = 'register'
+FUNCTION_UPDATE = 'update'
+FUNCTION_RESET = 'reset'
 
 # Django Suit
 SUIT_CONFIG = {
