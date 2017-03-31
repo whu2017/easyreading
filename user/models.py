@@ -3,8 +3,12 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.core.cache import cache
 from django.utils import timezone
+
+from user.utils import generate_random_key, generate_random_code, VerificationCode
 
 
 class UserManager(BaseUserManager):
@@ -25,6 +29,40 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, phone, password, **extra_fields):
         return self._create_user(email, phone, password, True, **extra_fields)
+
+    def add_verification_code(self, user_id, identifier, function):
+        """
+        添加一个用户验证码
+        :param user_id: 用户 ID
+        :param identifier: 用户标识符
+        :param function: 功能
+        :return: 验证 Token
+        """
+        key = generate_random_key()
+        value = VerificationCode(user_id, function)
+        cache.set(key, value, settings.VERIFICATION_TIMEOUT)
+        if '@' in identifier:
+            pass
+        else:
+            pass
+        return key
+
+    def check_verification_code(self, token, function, code):
+        """
+        检查一个用户验证码是否有效
+        :param token: 用户 Token
+        :param function: 功能
+        :param code: 验证 Code
+        :return: None or user_id
+        """
+        res = cache.get(token)
+        if res is None:
+            return None
+        if not(hasattr(res, 'user_id') and hasattr(res, 'function') and hasattr(res, 'code')):
+            return None
+        if res.function != function or res.code != code:
+            return None
+        return res.user_id
 
 
 class User(AbstractBaseUser):

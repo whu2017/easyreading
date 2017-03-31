@@ -151,6 +151,20 @@ CELERY_QUEUES = (
 CELERYD_TASK_TIME_LIMIT = 600
 CELERY_TIMEZONE = 'Asia/Shanghai'
 
+# Cache
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+VERIFICATION_TIMEOUT = 900  # 15 分钟验证码过期
+
 # Django Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
