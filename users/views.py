@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 from datetime import datetime
 
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
@@ -74,7 +75,12 @@ class IdentifierCheckView(APIView):
         identifier = serializer.validated_data.get('identifier')
         user_id = serializer.validated_data.get('user_id')
         func = serializer.validated_data.get('func')
-        if user_id == 0:
+        if func == settings.FUNCTION_REGISTER and user_id is not None:
+            return Response({
+                'identifier': identifier,
+                'available': False,
+            })
+        elif (func == settings.FUNCTION_UPDATE or func == settings.FUNCTION_RESET) and user_id is None:
             return Response({
                 'identifier': identifier,
                 'available': False,
@@ -82,5 +88,5 @@ class IdentifierCheckView(APIView):
         return Response({
             'identifier': identifier,
             'available': True,
-            'identifier_token': User.objects.add_verification_code(user_id, identifier, func),
+            'identifier_token': User.objects.add_verification_code(identifier, func),
         })

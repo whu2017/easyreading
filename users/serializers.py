@@ -33,11 +33,7 @@ class IdentifierCheckSerializer(Serializer):
         users = User.objects.filter(email=identifier)
         if not users.exists():
             users = User.objects.filter(phone=identifier)
-            if not users.exists():
-                attrs['user_id'] = 0
-            else:
-                attrs['user_id'] = users[0].pk
-        else:
+        if users.exists():
             attrs['user_id'] = users[0].pk
 
         function = attrs.get('function')

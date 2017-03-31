@@ -12,8 +12,8 @@ from rest_framework_jwt.settings import api_settings
 
 class VerificationCode(object):
 
-    def __init__(self, user_id, func):
-        self.user_id = user_id
+    def __init__(self, identifier, func):
+        self.identifier = identifier
         self.func = func
         self.code = generate_random_code()
 

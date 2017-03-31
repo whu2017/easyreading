@@ -31,16 +31,15 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, phone, password, **extra_fields):
         return self._create_user(email, phone, password, True, **extra_fields)
 
-    def add_verification_code(self, user_id, identifier, func):
+    def add_verification_code(self, identifier, func):
         """
         添加一个用户验证码
-        :param user_id: 用户 ID
         :param identifier: 用户标识符
         :param func: 功能
         :return: 验证 Token
         """
         key = generate_random_key()
-        value = VerificationCode(user_id, func)
+        value = VerificationCode(identifier, func)
         cache.set(key, value, settings.VERIFICATION_TIMEOUT)
         if '@' in identifier:
             send_email.apply_async(args=[func, identifier, str(value.code)], kwargs={})
@@ -54,16 +53,16 @@ class UserManager(BaseUserManager):
         :param token: 用户 Token
         :param func: 功能
         :param code: 验证 Code
-        :return: None or user_id
+        :return: None or identifier
         """
         res = cache.get(token)
         if res is None:
             return None
-        if not(hasattr(res, 'user_id') and hasattr(res, 'func') and hasattr(res, 'code')):
+        if not(hasattr(res, 'identifier') and hasattr(res, 'func') and hasattr(res, 'code')):
             return None
         if res.func != func or res.code != code:
             return None
-        return res.user_id
+        return res.identifier
 
 
 class User(AbstractBaseUser):
