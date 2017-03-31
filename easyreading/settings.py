@@ -151,6 +151,71 @@ CELERY_QUEUES = (
 CELERYD_TASK_TIME_LIMIT = 600
 CELERY_TIMEZONE = 'Asia/Shanghai'
 
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s [%(name)s:%(funcName)s:%(lineno)d] [%(threadName)s:%(thread)d] [%(levelname)s] - %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+        'simple': {
+            'format': '%(log_color)s[%(name)s:%(funcName)s:%(lineno)d] %(levelname)s %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+        'simple_with_console': {
+            '()': 'colorlog.ColoredFormatter',
+            'format': '%(log_color)s[%(name)s:%(funcName)s:%(lineno)d] %(levelname)s %(message)s',
+            'log_colors': {
+                'DEBUG': 'bold_black',
+                'INFO': 'white',
+                'WARNING': 'yellow',
+                'ERROR': 'red',
+                'CRITICAL': 'bold_red',
+            },
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple_with_console',
+            'filters': ['require_debug_true'],
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'app': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'lib': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'users': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}
+
 # Cache
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
@@ -183,6 +248,14 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
+
+# Alibaba DAYU
+DAYU_APPKEY = '23717357'.encode('utf8')
+DAYU_SECRET = '9ae2a0af04f2f32ee9ab4dfbf274f72a'.encode('utf8')
+DAYU_SIGNATURE = '随阅易手机阅读'.encode('utf8')
+DAYU_TEMPLATE_REGISTER = 'SMS_57905074'.encode('utf8')
+DAYU_TEMPLATE_UPDATE = 'SMS_57730084'.encode('utf8')
+DAYU_TEMPLATE_RESET = 'SMS_57680071'.encode('utf8')
 
 # Django Suit
 SUIT_CONFIG = {
