@@ -9,6 +9,7 @@ from django.core.cache import cache
 from django.utils import timezone
 
 from users.utils import generate_random_key, VerificationCode
+from users.tasks import send_email, send_sms
 
 
 class UserManager(BaseUserManager):
@@ -30,37 +31,37 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, phone, password, **extra_fields):
         return self._create_user(email, phone, password, True, **extra_fields)
 
-    def add_verification_code(self, user_id, identifier, function):
+    def add_verification_code(self, user_id, identifier, func):
         """
         添加一个用户验证码
         :param user_id: 用户 ID
         :param identifier: 用户标识符
-        :param function: 功能
+        :param func: 功能
         :return: 验证 Token
         """
         key = generate_random_key()
         value = VerificationCode(user_id, function)
         cache.set(key, value, settings.VERIFICATION_TIMEOUT)
         if '@' in identifier:
-            pass
+            send_email.apply_async(args=[func, identifier, value.code], kwargs={})
         else:
-            pass
+            send_sms.apply_async(args=[func, identifier, value.code], kwargs={})
         return key
 
-    def check_verification_code(self, token, function, code):
+    def check_verification_code(self, token, func, code):
         """
         检查一个用户验证码是否有效
         :param token: 用户 Token
-        :param function: 功能
+        :param func: 功能
         :param code: 验证 Code
         :return: None or user_id
         """
         res = cache.get(token)
         if res is None:
             return None
-        if not(hasattr(res, 'user_id') and hasattr(res, 'function') and hasattr(res, 'code')):
+        if not(hasattr(res, 'user_id') and hasattr(res, 'func') and hasattr(res, 'code')):
             return None
-        if res.function != function or res.code != code:
+        if res.function != func or res.code != code:
             return None
         return res.user_id
 
