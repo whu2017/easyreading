@@ -108,6 +108,26 @@ class LoginSerializer(Serializer):
             raise serializers.ValidationError('必须正确填写用户名和密码')
 
 
+class PasswordResetSerializer(Serializer):
+    identifier_token = serializers.CharField(max_length=64)
+    code = serializers.IntegerField()
+    new_password = serializers.CharField(max_length=64)
+
+    def validate_code(self, value):
+        if value < 100000 or value > 999999:
+            raise serializers.ValidationError('验证码必须为 6 位整数')
+        return value
+
+    def validate(self, attrs):
+        identifier_token = attrs.get('identifier_token')
+        code = attrs.get('code')
+        identifier = User.objects.check_verification_code(identifier_token, settings.FUNCTION_RESET, code)
+        if identifier is None:
+            raise serializers.ValidationError('验证码不正确')
+        attrs['identifier'] = identifier
+        return attrs
+
+
 class PermissionBaseSerializer(Serializer):
     token = serializers.CharField()
 

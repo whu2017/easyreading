@@ -11,7 +11,7 @@ from rest_framework_jwt.settings import api_settings
 
 from users.serializers import (
     LoginSerializer, PermissionUpdateSerializer, PermissionVerifySerializer,
-    IdentifierCheckSerializer, RegisterSerializer,
+    IdentifierCheckSerializer, RegisterSerializer, PasswordResetSerializer,
 )
 from users.utils import jwt_response_payload_handler
 from users.models import User
@@ -110,6 +110,36 @@ class RegisterView(APIView):
         else:
             user = User.objects.create_user('', identifier, password)
         user.nickname = nickname
+        user.save()
+
+        # 获取用户 Token 信息
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload),
+        response_data = jwt_response_payload_handler(token, user, request)
+        response = Response(response_data)
+        if api_settings.JWT_AUTH_COOKIE:
+            expiration = (datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA)
+            response.set_cookie(api_settings.JWT_AUTH_COOKIE, response.data['token'], expires=expiration, httponly=True)
+        return response
+
+
+class PasswordResetView(APIView):
+    permission_classes = ()
+    authentication_classes = ()
+    serializer_class = PasswordResetSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        identifier = serializer.validated_data.get('identifier')
+        new_password = serializer.validated_data.get('new_password')
+        if '@' in identifier:
+            users = User.objects.filter(email=identifier)
+        else:
+            users = User.objects.filter(phone=identifier)
+        user = users[0]
+        user.set_password(new_password)
         user.save()
 
         # 获取用户 Token 信息
