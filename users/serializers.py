@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from calendar import timegm
-from datetime import datetime, timedelta
 
 import jwt
 from django.contrib.auth import authenticate, get_user_model
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 
@@ -17,6 +16,39 @@ jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
 jwt_get_username_from_payload = api_settings.JWT_PAYLOAD_GET_USERNAME_HANDLER
+
+
+class IdentifierCheckSerializer(Serializer):
+    identifier = serializers.CharField(max_length=64)
+    function = serializers.IntegerField()
+
+    def validate_function(self, value):
+        if value not in [0, 1, 2]:
+            raise serializers.ValidationError('参数非法，必须在 0, 1, 2 之中')
+        return value
+
+    def validate(self, attrs):
+        identifier = attrs.get('identifier')
+
+        users = User.objects.filter(email=identifier)
+        if not users.exists():
+            users = User.objects.filter(phone=identifier)
+            if not users.exists():
+                attrs['user_id'] = 0
+            else:
+                attrs['user_id'] = users[0].pk
+        else:
+            attrs['user_id'] = users[0].pk
+
+        function = attrs.get('function')
+        if function == 0:
+            attrs['func'] = settings.FUNCTION_REGISTER
+        elif function == 1:
+            attrs['func'] = settings.FUNCTION_RESET
+        else:
+            attrs['func'] = settings.FUNCTION_UPDATE
+
+        return attrs
 
 
 class LoginSerializer(Serializer):

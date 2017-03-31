@@ -4,12 +4,15 @@ from __future__ import unicode_literals
 from datetime import datetime
 
 from rest_framework.views import APIView
-from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
 
-from users.serializers import LoginSerializer, PermissionUpdateSerializer, PermissionVerifySerializer
+from users.serializers import (
+    LoginSerializer, PermissionUpdateSerializer, PermissionVerifySerializer,
+    IdentifierCheckSerializer,
+)
 from users.utils import jwt_response_payload_handler
+from users.models import User
 
 
 class UserBaseAPIView(APIView):
@@ -57,3 +60,27 @@ class PermissionVerifyView(UserBaseAPIView):
 
 class PermissionUpdateView(UserBaseAPIView):
     serializer_class = PermissionUpdateSerializer
+
+
+class IdentifierCheckView(APIView):
+    permission_classes = ()
+    authentication_classes = ()
+    serializer_class = IdentifierCheckSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        identifier = serializer.validated_data.get('identifier')
+        user_id = serializer.validated_data.get('user_id')
+        func = serializer.validated_data.get('func')
+        if user_id == 0:
+            return Response({
+                'identifier': identifier,
+                'available': False,
+            })
+        return Response({
+            'identifier': identifier,
+            'available': True,
+            'identifier_token': User.objects.add_verification_code(user_id, identifier, func),
+        })
