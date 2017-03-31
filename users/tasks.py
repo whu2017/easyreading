@@ -2,6 +2,7 @@
 import json
 import logging
 
+import six
 import emails
 from emails.template import JinjaTemplate as T
 from django.conf import settings
@@ -28,7 +29,7 @@ def send_sms(func, target, code):
         logger.warning('invalid function parameter %s' % func)
         return
     request.sms_free_sign_name = settings.DAYU_SIGNATURE
-    request.sms_param = {'code': code}
+    request.sms_param = {'code': six.binary_type(code)}
     try:
         response = request.getResponse()
     except TopException as e:

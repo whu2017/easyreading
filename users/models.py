@@ -40,12 +40,12 @@ class UserManager(BaseUserManager):
         :return: 验证 Token
         """
         key = generate_random_key()
-        value = VerificationCode(user_id, function)
+        value = VerificationCode(user_id, func)
         cache.set(key, value, settings.VERIFICATION_TIMEOUT)
         if '@' in identifier:
-            send_email.apply_async(args=[func, identifier, value.code], kwargs={})
+            send_email.apply_async(args=[func, identifier, str(value.code)], kwargs={})
         else:
-            send_sms.apply_async(args=[func, identifier, value.code], kwargs={})
+            send_sms.apply_async(args=[func, identifier, str(value.code)], kwargs={})
         return key
 
     def check_verification_code(self, token, func, code):
@@ -61,7 +61,7 @@ class UserManager(BaseUserManager):
             return None
         if not(hasattr(res, 'user_id') and hasattr(res, 'func') and hasattr(res, 'code')):
             return None
-        if res.function != func or res.code != code:
+        if res.func != func or res.code != code:
             return None
         return res.user_id
 
