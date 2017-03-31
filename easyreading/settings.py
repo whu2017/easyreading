@@ -46,9 +46,9 @@ INSTALLED_APPS = [
 
     'rest_framework',  # Django Rest Framework
 
-    'user',  # 用户
-    'app.index',  # 主页
-    'app.transform',  # 文件格式转换工具
+    'user',
+    'app.index',
+    'app.transform',
 ]
 
 MIDDLEWARE = [
@@ -140,8 +140,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Celery
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+CELERY_BROKER_URL = 'redis://localhost:6379/1'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'
 CELERY_DEFAULT_QUEUE = 'default'
 CELERY_DEFAULT_ROUTING_KEY = 'default'
 CELERY_TASK_RESULT_EXPIRES = 3600
@@ -157,7 +157,7 @@ SESSION_CACHE_ALIAS = "default"
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/0",
+        "LOCATION": "redis://localhost:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

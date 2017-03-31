@@ -8,7 +8,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.core.cache import cache
 from django.utils import timezone
 
-from user.utils import generate_random_key, generate_random_code, VerificationCode
+from user.utils import generate_random_key, VerificationCode
 
 
 class UserManager(BaseUserManager):
