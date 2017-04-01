@@ -5,6 +5,7 @@ from django.conf.urls import url
 
 from users.views import (
     LoginView, PermissionUpdateView, PermissionVerifyView, IdentifierCheckView, RegisterView, PasswordResetView,
+    PasswordChangeView, UserProfileView
 )
 
 
@@ -15,4 +16,6 @@ urlpatterns = [
     url(r'^permission/update$', PermissionUpdateView.as_view(), name='permission_update'),
     url(r'^permission/verify$', PermissionVerifyView.as_view(), name='permission_verify'),
     url(r'^password/reset$', PasswordResetView.as_view(), name='password_reset'),
+    url(r'^password/change$', PasswordChangeView.as_view(), name='password_change'),
+    url(r'^profile$', UserProfileView.as_view(), name='profile'),
 ]

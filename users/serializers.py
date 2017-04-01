@@ -128,6 +128,24 @@ class PasswordResetSerializer(Serializer):
         return attrs
 
 
+class PasswordChangeSerializer(Serializer):
+    identifier = serializers.CharField(max_length=64)
+    old_password = serializers.CharField(max_length=64)
+    new_password = serializers.CharField(max_length=64)
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        identifier = attrs.get('identifier')
+        old_password = attrs.get('old_password')
+
+        if user.email != identifier and user.phone != identifier:
+            raise serializers.ValidationError('用户标识符与当前用户不相符')
+        if not user.check_password(old_password):
+            raise serializers.ValidationError('旧密码不正确')
+
+        return attrs
+
+
 class PermissionBaseSerializer(Serializer):
     token = serializers.CharField()
 

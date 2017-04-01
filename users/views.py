@@ -12,12 +12,14 @@ from rest_framework_jwt.settings import api_settings
 from users.serializers import (
     LoginSerializer, PermissionUpdateSerializer, PermissionVerifySerializer,
     IdentifierCheckSerializer, RegisterSerializer, PasswordResetSerializer,
+    PasswordChangeSerializer,
 )
 from users.utils import jwt_response_payload_handler
 from users.models import User
 
 
 class UserBaseAPIView(APIView):
+
     permission_classes = ()
     authentication_classes = ()
 
@@ -53,18 +55,22 @@ class UserBaseAPIView(APIView):
 
 
 class LoginView(UserBaseAPIView):
+
     serializer_class = LoginSerializer
 
 
 class PermissionVerifyView(UserBaseAPIView):
+
     serializer_class = PermissionVerifySerializer
 
 
 class PermissionUpdateView(UserBaseAPIView):
+
     serializer_class = PermissionUpdateSerializer
 
 
 class IdentifierCheckView(APIView):
+
     permission_classes = ()
     authentication_classes = ()
     serializer_class = IdentifierCheckSerializer
@@ -94,6 +100,7 @@ class IdentifierCheckView(APIView):
 
 
 class RegisterView(APIView):
+
     permission_classes = ()
     authentication_classes = ()
     serializer_class = RegisterSerializer
@@ -124,6 +131,7 @@ class RegisterView(APIView):
 
 
 class PasswordResetView(APIView):
+
     permission_classes = ()
     authentication_classes = ()
     serializer_class = PasswordResetSerializer
@@ -151,3 +159,51 @@ class PasswordResetView(APIView):
             expiration = (datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA)
             response.set_cookie(api_settings.JWT_AUTH_COOKIE, response.data['token'], expires=expiration, httponly=True)
         return response
+
+
+class PasswordChangeView(APIView):
+
+    def get_serializer(self, *args, **kwargs):
+        kwargs['context'] = {
+            'request': self.request,
+            'view': self,
+        }
+        return PasswordChangeSerializer(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        new_password = serializer.validated_data.get('new_password')
+        user.set_password(new_password)
+        user.save()
+
+        # 获取用户 Token 信息
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload),
+        response_data = jwt_response_payload_handler(token, user, request)
+        response = Response(response_data)
+        if api_settings.JWT_AUTH_COOKIE:
+            expiration = (datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA)
+            response.set_cookie(api_settings.JWT_AUTH_COOKIE, response.data['token'], expires=expiration, httponly=True)
+        return response
+
+
+class UserProfileView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        return Response({
+            'user_id': user.pk,
+            'email': user.email,
+            'phone': user.phone,
+            'nickname': user.nickname,
+            'signature': user.signature,
+            'options_sync_progress': user.option_sync_progress,
+            'options_clean_cache': user.option_clean_cache,
+            'options_display_progress': user.option_display_progress,
+            'options_wifi_download_only': user.option_wifi_download_only,
+            'options_accept_push': user.option_accept_push,
+            'options_auto_buy_chapter': user.option_auto_buy_chapter
+        })
