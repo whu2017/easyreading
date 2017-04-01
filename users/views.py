@@ -12,7 +12,7 @@ from rest_framework_jwt.settings import api_settings
 from users.serializers import (
     LoginSerializer, PermissionUpdateSerializer, PermissionVerifySerializer,
     IdentifierCheckSerializer, RegisterSerializer, PasswordResetSerializer,
-    PasswordChangeSerializer,
+    PasswordChangeSerializer, UserProfileSerializer
 )
 from users.utils import jwt_response_payload_handler
 from users.models import User
@@ -192,8 +192,56 @@ class PasswordChangeView(APIView):
 
 class UserProfileView(APIView):
 
+    serializer_class = UserProfileSerializer
+
     def get(self, request, *args, **kwargs):
         user = request.user
+        return Response({
+            'user_id': user.pk,
+            'email': user.email,
+            'phone': user.phone,
+            'nickname': user.nickname,
+            'signature': user.signature,
+            'options_sync_progress': user.option_sync_progress,
+            'options_clean_cache': user.option_clean_cache,
+            'options_display_progress': user.option_display_progress,
+            'options_wifi_download_only': user.option_wifi_download_only,
+            'options_accept_push': user.option_accept_push,
+            'options_auto_buy_chapter': user.option_auto_buy_chapter
+        })
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        nickname = serializer.validated_data.get('nickname')
+        signature = serializer.validated_data.get('signature')
+        options_sync_progress = serializer.validated_data.get('options_sync_progress')
+        options_clean_cache = serializer.validated_data.get('options_clean_cache')
+        options_display_progress = serializer.validated_data.get('options_display_progress')
+        options_wifi_download_only = serializer.validated_data.get('options_wifi_download_only')
+        options_accept_push = serializer.validated_data.get('options_accept_push')
+        options_auto_buy_chapter = serializer.validated_data.get('options_auto_buy_chapter')
+
+        if nickname is not None:
+            user.nickname = nickname
+        if signature is not None:
+            user.signature = signature
+        if options_sync_progress is not None:
+            user.option_sync_progress = options_sync_progress
+        if options_clean_cache is not None:
+            user.option_clean_cache = options_clean_cache
+        if options_display_progress is not None:
+            user.option_display_progress = options_display_progress
+        if options_wifi_download_only is not None:
+            user.option_wifi_download_only = options_wifi_download_only
+        if options_accept_push is not None:
+            user.option_accept_push = options_accept_push
+        if options_auto_buy_chapter is not None:
+            user.option_auto_buy_chapter = options_auto_buy_chapter
+        user.save()
+
         return Response({
             'user_id': user.pk,
             'email': user.email,

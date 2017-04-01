@@ -146,6 +146,17 @@ class PasswordChangeSerializer(Serializer):
         return attrs
 
 
+class UserProfileSerializer(Serializer):
+    nickname = serializers.CharField(max_length=64, required=False, allow_blank=True)
+    signature = serializers.CharField(required=False, allow_blank=True)
+    options_sync_progress = serializers.BooleanField(required=False)
+    options_clean_cache = serializers.BooleanField(required=False)
+    options_display_progress = serializers.BooleanField(required=False)
+    options_wifi_download_only = serializers.BooleanField(required=False)
+    options_accept_push = serializers.BooleanField(required=False)
+    options_auto_buy_chapter = serializers.BooleanField(required=False)
+
+
 class PermissionBaseSerializer(Serializer):
     token = serializers.CharField()
 
