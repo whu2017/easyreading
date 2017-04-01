@@ -210,7 +210,7 @@ class UserProfileView(APIView):
             'options_auto_buy_chapter': user.option_auto_buy_chapter
         })
 
-    def post(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
