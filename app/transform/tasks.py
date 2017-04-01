@@ -26,7 +26,7 @@ def transform_file(pk, filename):
 
     try:
         transform_file_execute(filename=os.path.join(settings.MEDIA_ROOT, filename))
-    except TransformException as e:
+    except Exception as e:
         logger.warning('transform failed', exc_info=1)
         transform.status = Transform.STATUS_FAIL
         transform.error_message = str(e)

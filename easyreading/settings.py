@@ -230,6 +230,9 @@ CACHES = {
 }
 VERIFICATION_TIMEOUT = 900  # 15 分钟验证码过期
 
+# Convertio
+CONVERTIO_API_KEY = '7b4fe6d206158d8498cbbca0e706389b'
+
 # Django Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
