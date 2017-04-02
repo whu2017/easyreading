@@ -32,3 +32,12 @@ class Transform(models.Model):
         db_table = 'transform'
         verbose_name = '电子书转换'
         verbose_name_plural = '电子书转换'
+
+    def save(self, *args, **kwargs):
+        created = False
+        if self.pk is None:
+            created = True
+        super(Transform, self).save(*args, **kwargs)
+        from app.transform.tasks import transform_file
+        if created:
+            transform_file.apply_async(args=[self.pk, self.origin.name], kwargs={})
