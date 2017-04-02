@@ -14,7 +14,7 @@ from users.serializers import (
     IdentifierCheckSerializer, RegisterSerializer, PasswordResetSerializer,
     PasswordChangeSerializer, UserProfileSerializer
 )
-from users.utils import jwt_response_payload_handler
+from users.utils import jwt_response_payload_handler, gravatar_url
 from users.models import User
 
 
@@ -202,6 +202,7 @@ class UserProfileView(APIView):
             'phone': user.phone,
             'nickname': user.nickname,
             'signature': user.signature,
+            'gravatar_url': gravatar_url(user.email),
             'options_sync_progress': user.option_sync_progress,
             'options_clean_cache': user.option_clean_cache,
             'options_display_progress': user.option_display_progress,
@@ -248,6 +249,7 @@ class UserProfileView(APIView):
             'phone': user.phone,
             'nickname': user.nickname,
             'signature': user.signature,
+            'gravatar_url': gravatar_url(user.email),
             'options_sync_progress': user.option_sync_progress,
             'options_clean_cache': user.option_clean_cache,
             'options_display_progress': user.option_display_progress,

@@ -5,13 +5,16 @@ from __future__ import unicode_literals
 import os
 import binascii
 import random
+import hashlib
+import urllib
 from datetime import datetime
 
+from django import template
+from django.utils.safestring import mark_safe
 from rest_framework_jwt.settings import api_settings
 
 
 class VerificationCode(object):
-
     def __init__(self, identifier, func):
         self.identifier = identifier
         self.func = func
@@ -32,3 +35,10 @@ def generate_random_key():
 
 def generate_random_code():
     return random.randint(100000, 999999)
+
+
+def gravatar_url(email, size=120):
+    return "https://www.gravatar.com/avatar/%s?%s" % (
+        hashlib.md5(email.lower()).hexdigest(),
+        urllib.urlencode({'s': str(size)}),
+    )
