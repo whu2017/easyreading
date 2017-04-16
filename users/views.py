@@ -121,7 +121,7 @@ class RegisterView(APIView):
 
         # 获取用户 Token 信息
         payload = jwt_payload_handler(user)
-        token = jwt_encode_handler(payload),
+        token = jwt_encode_handler(payload)
         response_data = jwt_response_payload_handler(token, user, request)
         response = Response(response_data)
         if api_settings.JWT_AUTH_COOKIE:
@@ -152,7 +152,7 @@ class PasswordResetView(APIView):
 
         # 获取用户 Token 信息
         payload = jwt_payload_handler(user)
-        token = jwt_encode_handler(payload),
+        token = jwt_encode_handler(payload)
         response_data = jwt_response_payload_handler(token, user, request)
         response = Response(response_data)
         if api_settings.JWT_AUTH_COOKIE:
@@ -181,7 +181,7 @@ class PasswordChangeView(APIView):
 
         # 获取用户 Token 信息
         payload = jwt_payload_handler(user)
-        token = jwt_encode_handler(payload),
+        token = jwt_encode_handler(payload)
         response_data = jwt_response_payload_handler(token, user, request)
         response = Response(response_data)
         if api_settings.JWT_AUTH_COOKIE:
