@@ -31,7 +31,7 @@ SECRET_KEY = 'ppr@22h0uc+#v13ufv&(zt381sih7k!c=)gh#y46pb+rjw%hx0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',  # Django Rest Framework
+    'corsheaders',
 
     'users',
     'app.index',
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -284,6 +286,9 @@ SUIT_CONFIG = {
         {'label': '用户管理', 'icon': 'icon-lock', 'models': ('users.users',)},
     )
 }
+
+# CORS
+CORS_ORIGIN_ALLOW_ALL = True
 
 try:
     from local_settings import *
