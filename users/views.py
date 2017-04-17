@@ -200,6 +200,7 @@ class UserProfileView(APIView):
             'user_id': user.pk,
             'email': user.email,
             'phone': user.phone,
+            'balance': user.balance.balance,
             'nickname': user.nickname,
             'signature': user.signature,
             'gravatar_url': gravatar_url(user.email),

@@ -131,8 +131,6 @@ class UserBalance(models.Model):
 
     def add_balance(self, num):
         self.balance += num
-        self.save()
 
     def dec_balance(self, num):
         self.balance -= num
-        self.save()
