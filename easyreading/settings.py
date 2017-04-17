@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'users',
     'app.index',
     'app.transform',
+    'app.deposit',
 ]
 
 MIDDLEWARE = [

@@ -110,3 +110,28 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+
+class UserBalance(models.Model):
+
+    user = models.OneToOneField(User, verbose_name='所属用户')
+    balance = models.FloatField('用户余额', default=0.0)
+
+    class Meta:
+        db_table = 'users_balance'
+        verbose_name = '用户结算表'
+        verbose_name_plural = '用户结算表'
+
+    def __unicode__(self):
+        return self.user.get_full_name() + " (%f)" % self.balance
+
+    def get_balance(self):
+        return self.balance
+
+    def add_balance(self, num):
+        self.balance += num
+        self.save()
+
+    def dec_balance(self, num):
+        self.balance -= num
+        self.save()
