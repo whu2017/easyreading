@@ -13,3 +13,4 @@ colorlog==2.10.0
 emails==0.5.13
 jinja2==2.9.5
 django-cors-headers==2.0.2
+django-annoying==0.10.3

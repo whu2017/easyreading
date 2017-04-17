@@ -10,7 +10,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from users.models import User
+from users.models import User, UserBalance
 
 logger = logging.getLogger(__name__)
 
@@ -94,13 +94,20 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
+class UserBalanceInline(admin.StackedInline):
+    model = UserBalance
+    extra = 1
+    max_num = 1
+
+
 class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     list_display = (
-        'id', 'email', 'phone', 'nickname', 'is_superuser', 'option_sync_progress', 'option_clean_cache',
+        'id', 'email', 'phone', 'get_balance', 'nickname', 'is_superuser', 'option_sync_progress', 'option_clean_cache',
         'option_display_progress', 'option_wifi_download_only', 'option_accept_push', 'option_auto_buy_chapter',
     )
+    inlines = [UserBalanceInline]
     list_filter = ()
     fieldsets = (
         ('基本信息', {
@@ -134,6 +141,10 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email', 'phone', 'nickname')
     ordering = ('-id', )
     filter_horizontal = ()
+
+    def get_balance(self, obj):
+        return obj.balance
+    get_balance.short_description = '当前余额'
 
 
 admin.site.register(User, UserAdmin)

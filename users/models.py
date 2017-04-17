@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.core.cache import cache
 from django.utils import timezone
+from annoying.fields import AutoOneToOneField
 
 from users.utils import generate_random_key, VerificationCode
 from users.tasks import send_email, send_sms
@@ -114,7 +115,7 @@ class User(AbstractBaseUser):
 
 class UserBalance(models.Model):
 
-    user = models.OneToOneField(User, verbose_name='所属用户')
+    user = AutoOneToOneField(User, verbose_name='所属用户', primary_key=True, related_name='balance')
     balance = models.FloatField('用户余额', default=0.0)
 
     class Meta:
@@ -123,7 +124,7 @@ class UserBalance(models.Model):
         verbose_name_plural = '用户结算表'
 
     def __unicode__(self):
-        return self.user.get_full_name() + " (%f)" % self.balance
+        return '%.2f 元' % self.balance
 
     def get_balance(self):
         return self.balance

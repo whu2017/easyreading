@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     'rest_framework',  # Django Rest Framework
     'corsheaders',
+    'annoying',
 
     'users',
     'app.index',
