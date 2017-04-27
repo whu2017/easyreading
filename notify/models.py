@@ -7,6 +7,50 @@ from django.db import models
 from users.models import User
 
 
+class NotifyManager(models.Manager):
+    """
+    通知表 Manager
+    """
+
+    def create_announce(self, content, sender):
+        """
+        新建公告
+        :param content: 文章内容 
+        :param sender: 发送者 User
+        :return: Notify object
+        """
+        return super(NotifyManager, self).create(content=content, notify_type=Notify.NOTIFY_TYPE_ANOUNCE, target=0,
+                                                 target_type=Notify.TARGET_TYPE_NULL,
+                                                 action_type=Notify.ACTION_TYPE_NULL, sender=sender)
+
+    def create_remind(self, content, target, target_type, action_type, sender):
+        """
+        新建提醒
+        :param content: 内容
+        :param target: 目标 ID
+        :param target_type: 目标类型
+        :param action_type: 动作
+        :param sender: 发送者 User
+        :return: Notify object
+        """
+        return super(NotifyManager, self).create(content=content, notify_type=Notify.NOTIFY_TYPE_REMIND,
+                                                 target=target, target_type=target_type, action_type=action_type,
+                                                 sender=sender)
+
+    def create_message(self, content, sender, receiver):
+        """
+        新建消息
+        :param content: 内容 
+        :param sender: 发送者 User 
+        :param receiver: 接收者 User
+        :return: Notify object
+        """
+        notify = super(NotifyManager, self).create(content=content, notify_type=Notify.NOTIFY_TYPE_MESSAGE,
+                                                   target=0, target_type=Notify.TARGET_TYPE_NULL,
+                                                   action_type=Notify.ACTION_TYPE_NULL, sender=sender)
+        return UserNotify.objects.create(user=receiver, notify=notify)
+
+
 class Notify(models.Model):
     """
     通知表
@@ -51,10 +95,15 @@ class Notify(models.Model):
     sender = models.ForeignKey(User, verbose_name='发送用户')
     create_timestamp = models.DateTimeField('创建时间', auto_now_add=True)
 
+    objects = NotifyManager()
+
     class Meta:
         db_table = 'notify'
         verbose_name = '通知表'
         verbose_name_plural = '通知表'
+
+    def __unicode__(self):
+        return self.content
 
 
 class UserNotify(models.Model):
