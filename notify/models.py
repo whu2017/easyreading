@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from datetime import datetime
 
 from django.db import models
 
@@ -49,6 +50,48 @@ class NotifyManager(models.Manager):
                                                    target=0, target_type=Notify.TARGET_TYPE_NULL,
                                                    action_type=Notify.ACTION_TYPE_NULL, sender=sender)
         return UserNotify.objects.create(user=receiver, notify=notify)
+
+    def pull_announce(self, user):
+        """
+        用户拉取公告
+        :param user: User object 
+        :return: Pull Counter
+        """
+        user_notify = UserNotify.objects.filter(notify__notify_type=Notify.NOTIFY_TYPE_ANOUNCE).order_by('-create_timestamp')[:1]
+        if user_notify.exists():
+            create_timestamp = user_notify[0].create_timestamp
+        else:
+            create_timestamp = datetime(2000, 1, 1, 0, 0, 0)
+        result = super(NotifyManager, self).filter(notify_type=Notify.NOTIFY_TYPE_ANOUNCE).filter(create_timestamp__gt=create_timestamp)
+        pull_count = 0
+        for notify in result:
+            UserNotify.objects.create(user=user, notify=notify)
+            pull_count += 1
+        return pull_count
+
+    def get_announce(self, user):
+        """
+        获取公告
+        :param user: User object 
+        :return: 
+        """
+        return UserNotify.objects.filter(user=user, notify__notify_type=Notify.NOTIFY_TYPE_ANOUNCE).order_by('-create_timestamp')[:10]
+
+    def get_remind(self, user):
+        """
+        获取提醒
+        :param user: User object 
+        :return: 
+        """
+        return UserNotify.objects.filter(user=user, notify__notify_type=Notify.NOTIFY_TYPE_REMIND).order_by('-create_timestamp')[:10]
+
+    def get_message(self, user):
+        """
+        获取消息
+        :param user: User object 
+        :return: 
+        """
+        return UserNotify.objects.filter(user=user, notify__notify_type=Notify.NOTIFY_TYPE_MESSAGE).order_by('-create_timestamp')[:10]
 
 
 class Notify(models.Model):
@@ -120,6 +163,12 @@ class UserNotify(models.Model):
         db_table = 'user_notify'
         verbose_name = '用户通知表'
         verbose_name_plural = '用户通知表'
+
+    def __unicode__(self):
+        return '%s,%s' % (self.notify, self.is_read)
+
+    def read(self):
+        self.is_read = True
 
 
 class Subscription(models.Model):
