@@ -69,29 +69,37 @@ class NotifyManager(models.Manager):
             pull_count += 1
         return pull_count
 
-    def get_announce(self, user):
+    def get_announce(self, user, limit=10):
         """
         获取公告
         :param user: User object 
         :return: 
         """
-        return UserNotify.objects.filter(user=user, notify__notify_type=Notify.NOTIFY_TYPE_ANOUNCE).order_by('-create_timestamp')[:10]
+        return UserNotify.objects.filter(user=user, notify__notify_type=Notify.NOTIFY_TYPE_ANOUNCE).order_by('-create_timestamp')[:limit]
 
-    def get_remind(self, user):
+    def get_remind(self, user, limit=10):
         """
         获取提醒
         :param user: User object 
         :return: 
         """
-        return UserNotify.objects.filter(user=user, notify__notify_type=Notify.NOTIFY_TYPE_REMIND).order_by('-create_timestamp')[:10]
+        return UserNotify.objects.filter(user=user, notify__notify_type=Notify.NOTIFY_TYPE_REMIND).order_by('-create_timestamp')[:limit]
 
-    def get_message(self, user):
+    def get_message(self, user, limit=10):
         """
         获取消息
         :param user: User object 
         :return: 
         """
-        return UserNotify.objects.filter(user=user, notify__notify_type=Notify.NOTIFY_TYPE_MESSAGE).order_by('-create_timestamp')[:10]
+        return UserNotify.objects.filter(user=user, notify__notify_type=Notify.NOTIFY_TYPE_MESSAGE).order_by('-create_timestamp')[:limit]
+
+    def get_all(self, user, limit=10):
+        """
+        获取用户的全部站内消息
+        :param user: User object
+        :return:  
+        """
+        return UserNotify.objects.filter(user=user).order_by('-create_timestamp')[:limit]
 
 
 class Notify(models.Model):
