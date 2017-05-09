@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'app.transform',
     'app.deposit',
     'notify',
+    'check',
 ]
 
 MIDDLEWARE = [

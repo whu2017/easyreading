@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^$', index_view, name='index'),
     url(r'^user/', include('users.urls', namespace='users')),
     url(r'^notify/', include('notify.urls', namespace='notify')),
+    url(r'^check/', include('check.urls', namespace='check')),
     url(r'^deposit/', include('app.deposit.urls', namespace='deposit')),
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
