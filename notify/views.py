@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import mixins, status
+from rest_framework.exceptions import NotFound
 
 from notify.models import Notify, UserNotify
 from notify.serializers import UserNotifyItemSerializer
@@ -41,7 +41,15 @@ class NotifyItemView(APIView):
     def get(self, request, pk, *args, **kwargs):
         instance = UserNotify.objects.filter(pk=pk)
         if not instance.exists():
-            return Response({})
-
+            raise NotFound()
         serializer = self.get_serializer(instance[0])
         return Response(serializer.data)
+
+    def put(self, request, pk, *args, **kwargs):
+        instance = UserNotify.objects.filter(pk=pk)
+        if not instance.exists():
+            raise NotFound()
+        obj = instance[0]
+        obj.read()
+        obj.save()
+        return Response(self.get_serializer(obj).data)
