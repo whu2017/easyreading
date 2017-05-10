@@ -15,8 +15,16 @@ class CheckView(APIView):
 
     def get(self, request, *args, **kwargs):
         total = Check.objects.filter(user=request.user).count()
+        now = datetime.now()
+        result = Check.objects.filter(
+            user=request.user,
+            check_timestamp__year=now.year,
+            check_timestamp__month=now.month,
+            check_timestamp__day=now.day,
+        )
         return Response({
             'total': total,
+            'is_check_today': True if result.exists() else False,
         })
 
     def post(self, request, *args, **kwargs):
