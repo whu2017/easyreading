@@ -114,7 +114,7 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'phone', 'password'),
         }),
         ('个性设置', {
-            'fields': ('nickname', 'signature'),
+            'fields': ('nickname', 'signature', 'avatar'),
         }),
         ('个人选项', {
             'fields': (
@@ -128,7 +128,7 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'phone', 'password',),
         }),
         ('个性设置', {
-            'fields': ('nickname', 'signature'),
+            'fields': ('nickname', 'signature', 'avatar'),
         }),
         ('个人选项', {
             'classes': ('wide',),

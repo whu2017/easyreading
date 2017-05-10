@@ -203,7 +203,7 @@ class UserProfileView(APIView):
             'balance': user.balance.balance,
             'nickname': user.nickname,
             'signature': user.signature,
-            'gravatar_url': gravatar_url(user.email),
+            'avatar': user.avatar.url if user.avatar else '',
             'options_sync_progress': user.option_sync_progress,
             'options_clean_cache': user.option_clean_cache,
             'options_display_progress': user.option_display_progress,
@@ -219,6 +219,7 @@ class UserProfileView(APIView):
         user = request.user
         nickname = serializer.validated_data.get('nickname')
         signature = serializer.validated_data.get('signature')
+        avatar = serializer.validated_data.get('avatar')
         options_sync_progress = serializer.validated_data.get('options_sync_progress')
         options_clean_cache = serializer.validated_data.get('options_clean_cache')
         options_display_progress = serializer.validated_data.get('options_display_progress')
@@ -230,6 +231,8 @@ class UserProfileView(APIView):
             user.nickname = nickname
         if signature is not None:
             user.signature = signature
+        if avatar is not None:
+            user.avatar = avatar
         if options_sync_progress is not None:
             user.option_sync_progress = options_sync_progress
         if options_clean_cache is not None:
@@ -250,7 +253,7 @@ class UserProfileView(APIView):
             'phone': user.phone,
             'nickname': user.nickname,
             'signature': user.signature,
-            'gravatar_url': gravatar_url(user.email),
+            'avatar': user.avatar.url if user.avatar else '',
             'options_sync_progress': user.option_sync_progress,
             'options_clean_cache': user.option_clean_cache,
             'options_display_progress': user.option_display_progress,
@@ -258,3 +261,4 @@ class UserProfileView(APIView):
             'options_accept_push': user.option_accept_push,
             'options_auto_buy_chapter': user.option_auto_buy_chapter
         })
+

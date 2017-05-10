@@ -75,6 +75,7 @@ class User(AbstractBaseUser):
 
     nickname = models.CharField('昵称', max_length=64, blank=True)
     signature = models.TextField('个性签名', blank=True)
+    avatar = models.ImageField('头像', upload_to='avatar/%Y/%m/%d/', blank=True)
 
     option_sync_progress = models.BooleanField('同步进度', default=False)
     option_clean_cache = models.BooleanField('自动清除缓存', default=False)
