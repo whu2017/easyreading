@@ -140,9 +140,9 @@ class Notify(models.Model):
 
     content = models.TextField('通知内容')
     notify_type = models.IntegerField('通知类型', choices=NOTIFY_TYPE)
-    target = models.IntegerField('目标ID')
-    target_type = models.CharField('目标类型', choices=TARGET_TYPE, max_length=64)
-    action_type = models.CharField('动作类型', choices=ACTION_TYPE, max_length=64)
+    target = models.IntegerField('目标ID', default=0, blank=True)
+    target_type = models.CharField('目标类型', choices=TARGET_TYPE, max_length=64, blank=True)
+    action_type = models.CharField('动作类型', choices=ACTION_TYPE, max_length=64, blank=True)
     sender = models.ForeignKey(User, verbose_name='发送用户')
     create_timestamp = models.DateTimeField('创建时间', auto_now_add=True)
 
