@@ -17,6 +17,16 @@ class RecordPagination(PageNumberPagination):
     max_page_size = 10000
 
 
+class BalanceView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        balance_rmb = request.user.balance.get_balance()
+        return Response({
+            'balance_rmb': balance_rmb,
+            'balance_book': balance_rmb * 100,
+        })
+
+
 class RecordListView(APIView):
 
     def get_serializer(self, *args, **kwargs):
@@ -38,7 +48,8 @@ class RecordListView(APIView):
 
         return Response({
             'amount': amount,
-            'balance': user.balance.get_balance(),
+            'balance_rmb': user.balance.get_balance(),
+            'balance_book': user.balance.get_balance() * 100,
         })
 
     def get(self, request, *args, **kwargs):
