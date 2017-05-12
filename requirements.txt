@@ -15,3 +15,4 @@ jinja2==2.9.5
 django-cors-headers==2.0.2
 django-annoying==0.10.3
 Pillow==4.0.0
+xinge-push==1.1.8.3
