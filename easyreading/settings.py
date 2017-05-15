@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'notify',
     'check',
     'bookshopping',
+    'paradoxvault',
 ]
 
 MIDDLEWARE = [
