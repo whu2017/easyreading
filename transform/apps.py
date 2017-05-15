@@ -6,6 +6,6 @@ from django.apps import AppConfig
 
 
 class TransformConfig(AppConfig):
-    name = "app.transform"
-    label = "app.transform"
+    name = "transform"
+    label = "transform"
     verbose_name = "转换器"

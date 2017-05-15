@@ -8,8 +8,8 @@ import commands
 from django.db.models import ObjectDoesNotExist
 from django.conf import settings
 from celery import shared_task
-from app.transform.models import Transform
-from app.transform.exceptions import TransformException
+from transform.models import Transform
+from transform.exceptions import TransformException
 
 logger = logging.getLogger(__name__)
 

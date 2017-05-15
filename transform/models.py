@@ -38,6 +38,6 @@ class Transform(models.Model):
         if self.pk is None:
             created = True
         super(Transform, self).save(*args, **kwargs)
-        from app.transform.tasks import transform_file
+        from transform.tasks import transform_file
         if created:
             transform_file.apply_async(args=[self.pk, self.origin.name], kwargs={})

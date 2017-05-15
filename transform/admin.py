@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 
-from app.transform.models import Transform
+from transform.models import Transform
 
 
 class TransformAdmin(admin.ModelAdmin):

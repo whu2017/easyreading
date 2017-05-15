@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import mixins, status
 
-from app.deposit.serializers import RecordCreateSerializer, RecordItemSerializer
-from app.deposit.models import Deposit
+from deposit.serializers import RecordCreateSerializer, RecordItemSerializer
+from deposit.models import Deposit
 
 
 class RecordPagination(PageNumberPagination):

@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 
-from app.deposit.models import Deposit
+from deposit.models import Deposit
 
 
 class DepositAdmin(admin.ModelAdmin):

@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from rest_framework import serializers
 
-from app.deposit.models import Deposit
+from deposit.models import Deposit
 
 
 class RecordCreateSerializer(serializers.Serializer):

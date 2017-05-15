@@ -44,18 +44,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'rest_framework',  # Django Rest Framework
+    # 第三方库
+    'rest_framework',
     'corsheaders',
     'annoying',
+    'mptt',
 
+    # 项目模块
     'users',
-    'app.index',
-    'app.transform',
-    'app.deposit',
+    'index',
+    'transform',
+    'deposit',
     'notify',
     'check',
     'bookshopping',
-    'mptt',
 ]
 
 MIDDLEWARE = [

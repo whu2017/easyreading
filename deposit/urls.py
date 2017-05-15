@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from django.conf.urls import url
 
-from app.deposit.views import RecordListView, RecordItemView, BalanceView
+from deposit.views import RecordListView, RecordItemView, BalanceView
 
 
 urlpatterns = [

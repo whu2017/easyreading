@@ -6,6 +6,6 @@ from django.apps import AppConfig
 
 
 class IndexConfig(AppConfig):
-    name = "app.index"
-    label = "app.index"
+    name = "index"
+    label = "index"
     verbose_name = "主页"

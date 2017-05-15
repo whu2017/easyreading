@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
-from app.index.views import index_view
+from index.views import index_view
 
 
 urlpatterns = [
@@ -31,7 +31,7 @@ urlpatterns = [
     url(r'^user/', include('users.urls', namespace='users')),
     url(r'^notify/', include('notify.urls', namespace='notify')),
     url(r'^check/', include('check.urls', namespace='check')),
-    url(r'^deposit/', include('app.deposit.urls', namespace='deposit')),
+    url(r'^deposit/', include('deposit.urls', namespace='deposit')),
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', obtain_jwt_token),

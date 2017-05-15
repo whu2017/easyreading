@@ -6,6 +6,6 @@ from django.apps import AppConfig
 
 
 class DepositConfig(AppConfig):
-    name = "app.deposit"
-    label = "app.deposit"
+    name = "deposit"
+    label = "deposit"
     verbose_name = "用户充值单"
