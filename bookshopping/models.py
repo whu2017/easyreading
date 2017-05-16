@@ -8,6 +8,8 @@ from users.models import User
 
 from mptt.models import MPTTModel, TreeForeignKey
 
+from transform.models import Transform
+
 
 class BookClass(models.Model):
     """
@@ -29,6 +31,7 @@ class BookInfo(models.Model):
     图书信息表
     """
     book_class = models.ForeignKey(BookClass, verbose_name='图书类表')
+    file = models.ForeignKey(Transform, verbose_name='电子书转换类')
     title = models.CharField('书名', max_length=30)
     price = models.FloatField('价格')
     data = models.TextField('简介')
@@ -72,13 +75,17 @@ class Comment(MPTTModel):
     comment_time = models.DateTimeField('评论时间')
     comment_contain = models.TextField('评论内容')
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-    comment_score = models.IntegerField('评论分数')
+    comment_score = models.IntegerField('评分')
 
     def __unicode__(self):
         return '%d' % self.book_info.pk
 
     class MPTTMeta:
         order_insertion_by = ['comment_time']
+
+    class Meta:
+        verbose_name = '评论表'
+        verbose_name_plural = '评论表'
 
 
 class ShoppingList(models.Model):
