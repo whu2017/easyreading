@@ -5,6 +5,10 @@ from __future__ import unicode_literals
 from rest_framework import serializers
 
 
+class ChapterSerializer(serializers.Serializer):
+    identifier = serializers.CharField()
+
+
 class ReadingProgressSerializer(serializers.Serializer):
     chapter = serializers.CharField()
     paragraph = serializers.IntegerField(min_value=0)

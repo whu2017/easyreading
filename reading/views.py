@@ -6,11 +6,79 @@ from django.db.models import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
+from rest_framework.serializers import ValidationError
 from rest_framework import mixins, status
 
 from book.models import Book
-from reading.serializers import ReadingProgressSerializer, BookmarkSerializer, BookmarkGetSerializer
+from personal.models import Order
+from reading.serializers import ReadingProgressSerializer, BookmarkSerializer, BookmarkGetSerializer, ChapterSerializer
 from reading.models import ReadingProgress, Bookmark
+from lib.parser.epub import parse_structure, chapter_content
+
+
+class BookView(APIView):
+
+    def get(self, request, book_id, *args, **kwargs):
+        user = request.user
+        try:
+            book = Book.objects.get(pk=book_id)
+        except ObjectDoesNotExist as e:
+            raise NotFound()
+
+        is_bought = False
+        if Order.objects.filter(user=user, book=book).exists():
+            is_bought = True
+        structure = parse_structure(book.resource.final.path)
+
+        return Response({
+            "info": {
+                "id": book.pk,
+                "category_id": book.category.pk,
+                "category_name": book.category.name,
+                "title": book.title,
+                "author": book.author,
+                "cover": book.cover.url if book.cover else '',
+                "introduction": book.introduction,
+                "price": book.price,
+                "score": book.score,
+                "total_chapter": book.total_chapter,
+                "latest_chapter_text": book.latest_chapter_text,
+                "allow_trial": book.allow_trial,
+                "trial_chapter": book.trial_chapter,
+                "create_timestamp": book.create_timestamp,
+                "update_timestamp": book.update_timestamp,
+                "is_bought": is_bought,
+            },
+            "structure": structure,
+        })
+
+
+class ChapterView(APIView):
+
+    def get(self, request, book_id, *args, **kwargs):
+        serializer = ChapterSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        try:
+            book = Book.objects.get(pk=book_id)
+        except ObjectDoesNotExist as e:
+            raise NotFound()
+        identifier = serializer.validated_data['identifier']
+
+        is_bought = False
+        if Order.objects.filter(user=user, book=book).exists():
+            is_bought = True
+        if not is_bought:
+            if not book.allow_trial:
+                raise ValidationError('该章节需付费阅读，请购买该书籍')
+
+        paragraphs = chapter_content(book.resource.final.path, identifier)
+        return Response({
+            'chapter': paragraphs[0] if len(paragraphs) > 0 else '',
+            'identifier': identifier,
+            'paragraphs': paragraphs[1:] if len(paragraphs) > 0 else paragraphs,
+        })
 
 
 class BookmarkView(APIView):
@@ -110,8 +178,9 @@ class ReadingProgressView(APIView):
         if result.exists():
             progress = result[0]
         else:
-            # TODO 待修改 chapter
-            progress = ReadingProgress.objects.create(user=user, book=book, chapter="", paragraph=0, word=0)
+            structure = parse_structure(book.resource.final.path)
+            chapter = structure[0].chapter if len(structure) > 0 else ''
+            progress = ReadingProgress.objects.create(user=user, book=book, chapter=chapter, paragraph=0, word=0)
 
         return Response({
             "chapter": progress.chapter,
