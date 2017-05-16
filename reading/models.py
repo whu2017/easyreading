@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 from users.models import User
-from bookshopping.models import Book
+from book.models import Book
 
 
 class ReadingProgress(models.Model):

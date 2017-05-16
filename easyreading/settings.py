@@ -57,7 +57,9 @@ INSTALLED_APPS = [
     'deposit',
     'notify',
     'check',
-    'bookshopping',
+    'book',
+    'bookshelf',
+    'personal',
     'reading',
 ]
 

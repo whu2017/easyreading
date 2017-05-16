@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import mixins, status
 
-from bookshopping.models import Book
+from book.models import Book
 from reading.serializers import ReadingProgressSerializer, BookmarkSerializer, BookmarkGetSerializer
 from reading.models import ReadingProgress, Bookmark
 
