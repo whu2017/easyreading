@@ -20,6 +20,6 @@ class Bookshelf(models.Model):
         return '%s' % self.book
 
     class Meta:
-        db_table = 'bookcase'
+        db_table = 'bookshelf'
         verbose_name = '书架表'
         verbose_name_plural = '书架表'
