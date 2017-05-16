@@ -17,3 +17,4 @@ django-annoying==0.10.3
 Pillow==4.0.0
 xinge-push==1.1.8.3
 django-mptt
+beautifulsoup4==4.6.0
