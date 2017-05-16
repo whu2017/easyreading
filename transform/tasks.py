@@ -32,7 +32,7 @@ def transform_file(pk, filename):
         transform.error_message = str(e)
         transform.save()
         return
-    transform.book.name = filename + '.epub'
+    transform.final.name = filename + '.epub'
     transform.status = Transform.STATUS_FINISHED
     transform.save()
 

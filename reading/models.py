@@ -5,14 +5,14 @@ from __future__ import unicode_literals
 from django.db import models
 
 from users.models import User
-from bookshopping.models import BookInfo
+from bookshopping.models import Book
 
 
 class ReadingProgress(models.Model):
     """
     阅读进度表
     """
-    book = models.ForeignKey(BookInfo, verbose_name='所属书籍')
+    book = models.ForeignKey(Book, verbose_name='所属书籍')
     user = models.ForeignKey(User, verbose_name='所属用户')
     chapter = models.TextField('章节标识符', max_length=256)
     paragraph = models.IntegerField('段落位移')
@@ -32,7 +32,7 @@ class Bookmark(models.Model):
     """
     书签表
     """
-    book = models.ForeignKey(BookInfo, verbose_name='所属书籍')
+    book = models.ForeignKey(Book, verbose_name='所属书籍')
     user = models.ForeignKey(User, verbose_name='所属用户')
     chapter = models.TextField('章节标识符', max_length=256)
     paragraph = models.IntegerField('段落位移')

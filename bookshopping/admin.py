@@ -1,47 +1,52 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from django.contrib import admin
 
-from bookshopping.models import *
+from bookshopping.models import (
+    Category, Book, Bookshelf, Comment, Order, BuyRecord, DownloadRecord, ReadRecord,
+)
 
 
-class BookClassAdmin(admin.ModelAdmin):
-    list_display = ('book_class_name',)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', )
 
 
-class BookInfoAdmin(admin.ModelAdmin):
-    list_display = ('book_class', 'title', 'price', 'data', 'cover', 'author', 'score', 'time', 'chapter')
+class BookAdmin(admin.ModelAdmin):
+    list_display = ('category', 'title', 'author', 'price', 'score', 'total_chapter', 'allow_trial',
+                    'trial_chapter', 'create_timestamp', 'update_timestamp')
 
 
-class BookcaseAdmin(admin.ModelAdmin):
-    list_display = ('book_info', 'user')
+class BookshelfAdmin(admin.ModelAdmin):
+    list_display = ('user', 'book')
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('book_info', 'user', 'comment_time', 'comment_contain', 'parent', 'comment_score')
+    list_display = ('user', 'book', 'score', 'content', 'timestamp')
 
 
-class ShoppingListAdmin(admin.ModelAdmin):
-    list_display = ('book_info', 'user', 'buy_time', 'price')
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('user', 'book', 'price', 'timestamp')
 
 
 class BuyRecordAdmin(admin.ModelAdmin):
-    list_display = ('book_info', 'user', 'add_time')
+    list_display = ('user', 'book', 'timestamp')
 
 
 class DownloadRecordAdmin(admin.ModelAdmin):
-    list_display = ('book_info', 'user', 'add_time')
+    list_display = ('user', 'book', 'timestamp')
 
 
 class ReadRecordAdmin(admin.ModelAdmin):
-    list_display = ('book_info', 'user', 'add_time')
+    list_display = ('user', 'book', 'timestamp')
 
 
-admin.site.register(BookClass, BookClassAdmin)
-admin.site.register(BookInfo, BookInfoAdmin)
-admin.site.register(Bookcase, BookcaseAdmin)
+admin.site.register(Category, CategoryAdmin)
+admin.site.register(Book, BookAdmin)
+admin.site.register(Bookshelf, BookshelfAdmin)
 admin.site.register(Comment, CommentAdmin)
-admin.site.register(ShoppingList, ShoppingListAdmin)
+admin.site.register(Order, OrderAdmin)
 admin.site.register(BuyRecord, BuyRecordAdmin)
 admin.site.register(DownloadRecord, DownloadRecordAdmin)
 admin.site.register(ReadRecord, ReadRecordAdmin)

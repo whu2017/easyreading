@@ -3,62 +3,64 @@
 from __future__ import unicode_literals
 
 from django.db import models
-
-from users.models import User
-
 from mptt.models import MPTTModel, TreeForeignKey
 
+from users.models import User
 from transform.models import Transform
 
 
-class BookClass(models.Model):
+class Category(models.Model):
     """
-    图书类表
+    图书分类表
     """
-    book_class_name = models.CharField('图书类名', max_length=30)
+    name = models.CharField('分类名称', max_length=30)
 
     def __unicode__(self):
-        return '%s' % self.book_class_name
+        return self.name
 
     class Meta:
-        db_table = 'book_class'
-        verbose_name = '图书类表'
-        verbose_name_plural = '图书类表'
+        db_table = 'category'
+        verbose_name = '图书分类表'
+        verbose_name_plural = '图书分类表'
 
 
-class BookInfo(models.Model):
+class Book(models.Model):
     """
-    图书信息表
+    图书表
     """
-    book_class = models.ForeignKey(BookClass, verbose_name='图书类表')
-    file = models.ForeignKey(Transform, verbose_name='电子书转换类')
+    category = models.ForeignKey(Category, verbose_name='所属分类')
     title = models.CharField('书名', max_length=30)
-    price = models.FloatField('价格')
-    data = models.TextField('简介')
-    cover = models.ImageField('图片', upload_to='cover/%Y/%m/%d/', blank=True)
     author = models.CharField('作者', max_length=30)
+    cover = models.ImageField('图片', upload_to='cover/%Y/%m/%d/', blank=True)
+    introduction = models.TextField('简介')
+    price = models.FloatField('价格（书币）')
     score = models.FloatField('评分')
-    time = models.DateTimeField('更新时间')
-    chapter = models.CharField('最近更新章节', max_length=30)
+    total_chapter = models.IntegerField('章节数量')
+    latest_chapter_text = models.CharField('最近更新章节', max_length=64)
+    allow_trial = models.BooleanField('是否允许试读', default=True)
+    trial_chapter = models.PositiveIntegerField('试读允许章节', default=1)
+    create_timestamp = models.DateTimeField('创建时间', auto_now_add=True)
+    update_timestamp = models.DateTimeField('更新时间', auto_now=True)
+    resource = models.ForeignKey(Transform, verbose_name='图书文件')
 
     def __unicode__(self):
-        return '%s' % self.book_class
+        return self.title
 
     class Meta:
-        db_table = 'book_info'
-        verbose_name = '图书信息表'
-        verbose_name_plural = '图书信息表'
+        db_table = 'book'
+        verbose_name = '图书表'
+        verbose_name_plural = '图书表'
 
 
-class Bookcase(models.Model):
+class Bookshelf(models.Model):
     """
     书架表
     """
-    book_info = models.ForeignKey(BookInfo, verbose_name='图书信息表')
-    user = models.ForeignKey(User, verbose_name='用户')
+    user = models.ForeignKey(User, verbose_name='所属用户')
+    book = models.ForeignKey(Book, verbose_name='所属图书')
 
     def __unicode__(self):
-        return '%d' % self.book_info.pk
+        return '%s' % self.book
 
     class Meta:
         db_table = 'bookcase'
@@ -70,38 +72,39 @@ class Comment(MPTTModel):
     """
     评论表
     """
-    book_info = models.ForeignKey(BookInfo, verbose_name='图书信息表')
-    user = models.ForeignKey(User, verbose_name='用户')
-    comment_time = models.DateTimeField('评论时间')
-    comment_contain = models.TextField('评论内容')
+    user = models.ForeignKey(User, verbose_name='所属用户')
+    book = models.ForeignKey(Book, verbose_name='所属图书')
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-    comment_score = models.IntegerField('评分')
+    content = models.TextField('评论内容')
+    score = models.FloatField('评分', default=0)
+    timestamp = models.DateTimeField('评论时间', auto_now_add=True)
 
     def __unicode__(self):
-        return '%d' % self.book_info.pk
+        return self.content
 
     class MPTTMeta:
-        order_insertion_by = ['comment_time']
+        order_insertion_by = ['-timestamp']
 
     class Meta:
+        db_table = 'comment'
         verbose_name = '评论表'
         verbose_name_plural = '评论表'
 
 
-class ShoppingList(models.Model):
+class Order(models.Model):
     """
     账单表
     """
-    book_info = models.ForeignKey(BookInfo, verbose_name='图书信息表')
-    user = models.ForeignKey(User, verbose_name='用户')
-    buy_time = models.DateTimeField('购买日期')
-    price = models.FloatField('花费')
+    user = models.ForeignKey(User, verbose_name='所属用户')
+    book = models.ForeignKey(Book, verbose_name='所属图书')
+    price = models.FloatField('花费（书币）')
+    timestamp = models.DateTimeField('订单日期', auto_now_add=True)
 
     def __unicode__(self):
-        return '%s' % self.book_info.pk
+        return '%s' % self.book
 
     class Meta:
-        db_table = 'shopping_list'
+        db_table = 'order'
         verbose_name = '账单表'
         verbose_name_plural = '账单表'
 
@@ -110,12 +113,12 @@ class BuyRecord(models.Model):
     """
     购买表
     """
-    book_info = models.ForeignKey(BookInfo, verbose_name='图书信息表')
-    user = models.ForeignKey(User, verbose_name='用户')
-    add_time = models.DateTimeField('添加时间')
+    user = models.ForeignKey(User, verbose_name='所属用户')
+    book = models.ForeignKey(Book, verbose_name='所属图书')
+    timestamp = models.DateTimeField('购买日期', auto_now_add=True)
 
     def __unicode__(self):
-        return '%s' % self.book_info.pk
+        return '%s' % self.book
 
     class Meta:
         db_table = 'buy_record'
@@ -127,12 +130,12 @@ class DownloadRecord(models.Model):
     """
     下载表
     """
-    book_info = models.ForeignKey(BookInfo, verbose_name='图书信息表')
-    user = models.ForeignKey(User, verbose_name='用户')
-    add_time = models.DateTimeField('添加时间')
+    user = models.ForeignKey(User, verbose_name='所属用户')
+    book = models.ForeignKey(Book, verbose_name='所属图书')
+    timestamp = models.DateTimeField('下载时间', auto_now_add=True)
 
     def __unicode__(self):
-        return '%s' % self.book_info.pk
+        return '%s' % self.book
 
     class Meta:
         db_table = 'download_record'
@@ -144,12 +147,12 @@ class ReadRecord(models.Model):
     """
     已读表
     """
-    book_info = models.ForeignKey(BookInfo, verbose_name='图书信息表')
-    user = models.ForeignKey(User, verbose_name='用户')
-    add_time = models.DateTimeField('添加时间')
+    user = models.ForeignKey(User, verbose_name='所属用户')
+    book = models.ForeignKey(Book, verbose_name='所属图书')
+    timestamp = models.DateTimeField('添加时间', auto_now_add=True)
 
     def __unicode__(self):
-        return '%s' % self.book_info.pk
+        return '%s' % self.book
 
     class Meta:
         db_table = 'read_record'

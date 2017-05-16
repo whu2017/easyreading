@@ -3,13 +3,12 @@
 from __future__ import unicode_literals
 
 from django.db.models import ObjectDoesNotExist
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import mixins, status
 
-from bookshopping.models import BookInfo
+from bookshopping.models import Book
 from reading.serializers import ReadingProgressSerializer, BookmarkSerializer, BookmarkGetSerializer
 from reading.models import ReadingProgress, Bookmark
 
@@ -22,7 +21,7 @@ class BookmarkView(APIView):
 
         user = request.user
         try:
-            book = BookInfo.objects.get(pk=book_id)
+            book = Book.objects.get(pk=book_id)
         except ObjectDoesNotExist as e:
             raise NotFound()
 
@@ -37,7 +36,7 @@ class BookmarkView(APIView):
 
         user = request.user
         try:
-            book = BookInfo.objects.get(pk=book_id)
+            book = Book.objects.get(pk=book_id)
         except ObjectDoesNotExist as e:
             raise NotFound()
         chapter = serializer.validated_data['chapter']
@@ -76,7 +75,7 @@ class ReadingProgressView(APIView):
 
         user = request.user
         try:
-            book = BookInfo.objects.get(pk=book_id)
+            book = Book.objects.get(pk=book_id)
         except ObjectDoesNotExist as e:
             raise NotFound()
         chapter = serializer.validated_data['chapter']
@@ -103,7 +102,7 @@ class ReadingProgressView(APIView):
     def get(self, request, book_id, *args, **kwargs):
         user = request.user
         try:
-            book = BookInfo.objects.get(pk=book_id)
+            book = Book.objects.get(pk=book_id)
         except ObjectDoesNotExist as e:
             raise NotFound()
 
