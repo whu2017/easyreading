@@ -8,4 +8,4 @@ from django.apps import AppConfig
 class BookConfig(AppConfig):
     name = "book"
     label = "book"
-    verbose_name = "书城后台管理"
+    verbose_name = "书籍管理"
