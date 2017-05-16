@@ -71,7 +71,9 @@ class ChapterView(APIView):
             is_bought = True
         if not is_bought:
             if not book.allow_trial:
-                raise ValidationError('该章节需付费阅读，请购买该书籍')
+                return Response(data={
+                    "message": '该章节需付费阅读，请购买该书籍',
+                }, status=status.HTTP_400_BAD_REQUEST)
 
         paragraphs = chapter_content(book.resource.final.path, identifier)
         return Response({
