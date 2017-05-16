@@ -58,6 +58,7 @@ class Bookshelf(models.Model):
     """
     user = models.ForeignKey(User, verbose_name='所属用户')
     book = models.ForeignKey(Book, verbose_name='所属图书')
+    is_bought = models.BooleanField('是否已经购买', default=False)
 
     def __unicode__(self):
         return '%s' % self.book
