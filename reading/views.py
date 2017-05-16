@@ -10,21 +10,68 @@ from rest_framework.exceptions import NotFound
 from rest_framework import mixins, status
 
 from bookshopping.models import BookInfo
-from reading.serializers import ReadingProgressSerializer
-from reading.models import ReadingProgress
+from reading.serializers import ReadingProgressSerializer, BookmarkSerializer, BookmarkGetSerializer
+from reading.models import ReadingProgress, Bookmark
+
+
+class BookmarkView(APIView):
+
+    def get(self, request, book_id, *args, **kwargs):
+        serializer = BookmarkGetSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        try:
+            book = BookInfo.objects.get(pk=book_id)
+        except ObjectDoesNotExist as e:
+            raise NotFound()
+
+        result = Bookmark.objects.filter(user=user, book=book)
+        return Response({
+            "results": result.values('id', 'chapter', 'paragraph', 'word', 'detail', 'timestamp'),
+        })
+
+    def post(self, request, book_id, *args, **kwargs):
+        serializer = BookmarkSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        try:
+            book = BookInfo.objects.get(pk=book_id)
+        except ObjectDoesNotExist as e:
+            raise NotFound()
+        chapter = serializer.validated_data['chapter']
+        paragraph = serializer.validated_data['paragraph']
+        word = serializer.validated_data['word']
+
+        bookmark = Bookmark.objects.create(user=user, book=book, chapter=chapter, paragraph=paragraph, word=word, detail="")
+        return Response({
+            "chapter": bookmark.chapter,
+            "paragraph": bookmark.paragraph,
+            "word": bookmark.word,
+            "detail": bookmark.detail,
+            "timestamp": bookmark.timestamp,
+        })
+
+
+class BookmarkItemView(APIView):
+
+    def delete(self, request, book_id, bookmark_id, *args, **kwargs):
+        try:
+            bookmark = Bookmark.objects.get(pk=bookmark_id)
+        except ObjectDoesNotExist as e:
+            raise NotFound()
+        if bookmark.book.id != int(book_id):
+            raise NotFound()
+
+        bookmark.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ReadingProgressView(APIView):
 
-    def get_serializer(self, *args, **kwargs):
-        kwargs['context'] = {
-            'request': self.request,
-            'view': self,
-        }
-        return ReadingProgressSerializer(*args, **kwargs)
-
     def put(self, request, book_id, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = ReadingProgressSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         user = request.user
