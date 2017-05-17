@@ -20,7 +20,7 @@ class IndividuationView(APIView):
         serializer.is_valid(raise_exception=True)
         amount = serializer.validated_data['amount']
 
-        proxy = xmlrpclib.ServerProxy(settings.RECOMMENDATION_URL)
+        proxy = xmlrpclib.ServerProxy(settings.RECOMMENDATION_URL, allow_none=True)
         try:
             result = proxy.personalized_recommend(request.user.pk, amount)
         except Exception as e:
@@ -48,9 +48,9 @@ class RankView(APIView):
         serializer.is_valid(raise_exception=True)
         amount = serializer.validated_data['amount']
 
-        proxy = xmlrpclib.ServerProxy(settings.RECOMMENDATION_URL)
+        proxy = xmlrpclib.ServerProxy(settings.RECOMMENDATION_URL, allow_none=True)
         try:
-            result = proxy.popular_recommend()
+            result = proxy.popular_recommend(None, amount)
         except Exception as e:
             return Response(data={'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
