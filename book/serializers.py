@@ -13,10 +13,15 @@ class BookQuerySerializer(serializers.Serializer):
 
 
 class BookListSerializer(serializers.ModelSerializer):
+    cover = serializers.SerializerMethodField()
+
     class Meta:
         model = Book
         fields = ('id', 'title', 'author', 'cover', 'price')
         depth = 0
+
+    def get_cover(self, obj):
+        return obj.cover.url if obj.cover else ''
 
 
 class BookItemSerializer(serializers.ModelSerializer):
