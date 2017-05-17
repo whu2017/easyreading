@@ -6,11 +6,10 @@ from django.db.models import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
-from rest_framework.serializers import ValidationError
 from rest_framework import mixins, status
 
 from book.models import Book
-from personal.models import Order
+from personal.models import BuyRecord
 from reading.serializers import ReadingProgressSerializer, BookmarkSerializer, BookmarkGetSerializer, ChapterSerializer
 from reading.models import ReadingProgress, Bookmark
 from lib.parser.epub import parse_structure, chapter_content
@@ -26,7 +25,7 @@ class BookView(APIView):
             raise NotFound()
 
         is_bought = False
-        if Order.objects.filter(user=user, book=book).exists():
+        if BuyRecord.objects.filter(user=user, book=book).exists():
             is_bought = True
         structure = parse_structure(book.resource.final.path)
 
@@ -55,25 +54,23 @@ class BookView(APIView):
 
 class ChapterView(APIView):
 
+    def get_serializer(self, data, book_id, *args, **kwargs):
+        kwargs['context'] = {
+            'request': self.request,
+            'view': self,
+            'book_id': book_id,
+        }
+        return ChapterSerializer(data=data, *args, **kwargs)
+
     def get(self, request, book_id, *args, **kwargs):
-        serializer = ChapterSerializer(data=request.query_params)
+        serializer = self.get_serializer(data=request.query_params, book_id=book_id)
         serializer.is_valid(raise_exception=True)
 
-        user = request.user
         try:
             book = Book.objects.get(pk=book_id)
         except ObjectDoesNotExist as e:
             raise NotFound()
         identifier = serializer.validated_data['identifier']
-
-        is_bought = False
-        if Order.objects.filter(user=user, book=book).exists():
-            is_bought = True
-        if not is_bought:
-            if not book.allow_trial:
-                return Response(data={
-                    "message": '该章节需付费阅读，请购买该书籍',
-                }, status=status.HTTP_400_BAD_REQUEST)
 
         paragraphs = chapter_content(book.resource.final.path, identifier)
         return Response({
