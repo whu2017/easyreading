@@ -9,13 +9,13 @@ from rest_framework import status, generics, filters
 from rest_framework.exceptions import NotFound
 from django.db.models import ObjectDoesNotExist
 
-from book.serializers import BookListSerializer, BookQuerySerializer, BookItemSerializer
+from book.serializers import BookListSerializer, BookQuerySerializer, BookItemSerializer, CommentSerializer
 from book.models import Book, Category, Comment
 from users.models import User
 
 
 class BookPagination(PageNumberPagination):
-    page_size = 3
+    page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 10000
 
@@ -70,3 +70,58 @@ class BookItemView(APIView):
 
         serializer = BookItemSerializer(book)
         return Response(serializer.data)
+
+
+class CommentPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
+
+
+class CommentListView(APIView):
+
+    permission_classes = ()
+    authentication_classes = ()
+
+    def get(self, request, book_id, *args, **kwargs):
+        try:
+            book = Book.objects.get(pk=book_id)
+        except ObjectDoesNotExist as e:
+            raise NotFound()
+
+        paginator = CommentPagination()
+        queryset = Comment.objects.filter(book=book, parent=None)
+        result_page = paginator.paginate_queryset(queryset, request)
+        serializer = CommentSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+
+class CommentItemView(APIView):
+
+    permission_classes = ()
+    authentication_classes = ()
+
+    def get(self, request, comment_id, *args, **kwargs):
+        try:
+            comment = Comment.objects.get(pk=comment_id)
+        except ObjectDoesNotExist as e:
+            raise NotFound()
+        return Response(CommentSerializer(comment).data)
+
+
+class CommentChildrenView(APIView):
+
+    permission_classes = ()
+    authentication_classes = ()
+
+    def get(self, request, comment_id, *args, **kwargs):
+        try:
+            comment = Comment.objects.get(pk=comment_id)
+        except ObjectDoesNotExist as e:
+            raise NotFound()
+
+        paginator = CommentPagination()
+        queryset = Comment.objects.filter(parent=comment)
+        result_page = paginator.paginate_queryset(queryset, request)
+        serializer = CommentSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
