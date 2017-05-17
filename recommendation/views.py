@@ -48,7 +48,7 @@ class RankView(APIView):
 
         proxy = xmlrpclib.ServerProxy(settings.RECOMMENDATION_URL)
         try:
-            result = proxy.popular_recommend(amount)
+            result = proxy.popular_recommend(amount=amount)
         except Exception as e:
             return Response(data={'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
