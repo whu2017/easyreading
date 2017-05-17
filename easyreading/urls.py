@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^bookshopping', include('book.urls', namespace='book')),
     url(r'^personal', include('personal.urls', namespace='personal')),
     url(r'^bookshelf', include('bookshelf.urls', namespace='bookshelf')),
+    url(r'^recommendation', include('recommendation.urls', namespace='recommendation')),
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', obtain_jwt_token),

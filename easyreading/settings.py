@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'bookshelf',
     'personal',
     'reading',
+    'recommendation',
 ]
 
 MIDDLEWARE = [
@@ -283,6 +284,9 @@ SMTP_PASSWORD = 'Whu2017Test'.encode('utf8')
 FUNCTION_REGISTER = 'register'
 FUNCTION_UPDATE = 'update'
 FUNCTION_RESET = 'reset'
+
+# Recommendation
+RECOMMENDATION_URL = 'http://127.0.0.1:45213'
 
 # Django Suit
 SUIT_CONFIG = {
