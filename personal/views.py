@@ -2,13 +2,20 @@
 
 from __future__ import unicode_literals
 
+from rest_framework import generics
 from rest_framework.exceptions import NotFound
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from personal.serializers import DepositPostSerializer, DepositItemSerializer
-from personal.models import DepositRecord, Order
+from personal.serializers import DepositPostSerializer, DepositItemSerializer, BuyItemSerializer, OrderSerializer, ReadSerializer
+from personal.models import DepositRecord, Order, BuyRecord, ReadRecord
+
+
+class PersonalPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
 
 
 class BalanceView(APIView):
@@ -21,10 +28,30 @@ class BalanceView(APIView):
         })
 
 
-class DepositPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 10000
+class BuyingView(generics.ListAPIView):
+
+    queryset = BuyRecord.objects.all()
+    serializer_class = BuyItemSerializer
+    pagination_class = PersonalPagination
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.queryset.filter(user=request.user)
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+
+
+class OrderView(generics.ListAPIView):
+
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    pagination_class = PersonalPagination
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.queryset.filter(user=request.user)
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class DepositListView(APIView):
@@ -48,7 +75,7 @@ class DepositListView(APIView):
 
     def get(self, request, *args, **kwargs):
         queryset = DepositRecord.objects.filter(user=request.user)
-        paginator = DepositPagination()
+        paginator = PersonalPagination()
         result_page = paginator.paginate_queryset(queryset, request)
         serializer = DepositItemSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
@@ -64,3 +91,15 @@ class DepositItemView(APIView):
         serializer = DepositItemSerializer(instance[0])
         return Response(serializer.data)
 
+
+class ReadView(generics.ListAPIView):
+
+    queryset = ReadRecord.objects.all()
+    serializer_class = ReadSerializer
+    pagination_class = PersonalPagination
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.queryset.filter(user=request.user)
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
