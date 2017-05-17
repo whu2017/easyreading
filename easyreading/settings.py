@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'users',
     'index',
     'transform',
-    'deposit',
     'notify',
     'check',
     'book',

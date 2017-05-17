@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 from rest_framework import serializers
 
-from deposit.models import Deposit
+from personal.models import DepositRecord
 
 
-class RecordCreateSerializer(serializers.Serializer):
+class DepositPostSerializer(serializers.Serializer):
     amount = serializers.FloatField()
 
     def validate_amount(self, value):
@@ -16,7 +16,7 @@ class RecordCreateSerializer(serializers.Serializer):
         return value
 
 
-class RecordItemSerializer(serializers.ModelSerializer):
+class DepositItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Deposit
+        model = DepositRecord
         fields = ('id', 'amount', 'status', 'create_timestamp', 'modify_timestamp')

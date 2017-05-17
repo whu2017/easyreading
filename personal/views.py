@@ -2,19 +2,13 @@
 
 from __future__ import unicode_literals
 
+from rest_framework.exceptions import NotFound
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import mixins, status
 
-from deposit.serializers import RecordCreateSerializer, RecordItemSerializer
-from deposit.models import Deposit
-
-
-class RecordPagination(PageNumberPagination):
-    page_size = 20
-    page_size_query_param = 'page_size'
-    max_page_size = 10000
+from personal.serializers import DepositPostSerializer, DepositItemSerializer
+from personal.models import DepositRecord
 
 
 class BalanceView(APIView):
@@ -27,22 +21,21 @@ class BalanceView(APIView):
         })
 
 
-class RecordListView(APIView):
+class DepositPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
 
-    def get_serializer(self, *args, **kwargs):
-        kwargs['context'] = {
-            'request': self.request,
-            'view': self,
-        }
-        return RecordCreateSerializer(*args, **kwargs)
+
+class DepositListView(APIView):
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = DepositPostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         user = request.user
         amount = serializer.validated_data['amount']
-        Deposit.objects.create(user=user, amount=amount, status=Deposit.STATUS_PAID)
+        DepositRecord.objects.create(user=user, amount=amount, status=DepositRecord.STATUS_PAID)
         user.balance.add_balance(amount)
         user.balance.save()
 
@@ -53,26 +46,20 @@ class RecordListView(APIView):
         })
 
     def get(self, request, *args, **kwargs):
-        queryset = Deposit.objects.filter(user=request.user)
-        paginator = RecordPagination()
+        queryset = DepositRecord.objects.filter(user=request.user)
+        paginator = DepositPagination()
         result_page = paginator.paginate_queryset(queryset, request)
-        serializer = RecordItemSerializer(result_page, many=True)
+        serializer = DepositItemSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
 
 
-class RecordItemView(APIView):
-
-    def get_serializer(self, *args, **kwargs):
-        kwargs['context'] = {
-            'request': self.request,
-            'view': self,
-        }
-        return RecordItemSerializer(*args, **kwargs)
+class DepositItemView(APIView):
 
     def get(self, request, pk, *args, **kwargs):
-        instance = Deposit.objects.filter(pk=pk)
+        instance = DepositRecord.objects.filter(pk=pk)
         if not instance.exists():
-            return Response({})
+            raise NotFound()
 
-        serializer = self.get_serializer(instance[0])
+        serializer = DepositItemSerializer(instance[0])
         return Response(serializer.data)
+
