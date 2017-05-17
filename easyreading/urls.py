@@ -28,12 +28,12 @@ from index.views import index_view
 
 urlpatterns = [
     url(r'^$', index_view, name='index'),
-    url(r'^user/', include('users.urls', namespace='users')),
-    url(r'^notify/', include('notify.urls', namespace='notify')),
-    url(r'^check/', include('check.urls', namespace='check')),
-    url(r'^deposit/', include('deposit.urls', namespace='deposit')),
-    url(r'^reading/', include('reading.urls', namespace='reading')),
-    url(r'^bookshopping/', include('book.urls', namespace='book')),
+    url(r'^user', include('users.urls', namespace='users')),
+    url(r'^notify', include('notify.urls', namespace='notify')),
+    url(r'^check', include('check.urls', namespace='check')),
+    url(r'^deposit', include('deposit.urls', namespace='deposit')),
+    url(r'^reading', include('reading.urls', namespace='reading')),
+    url(r'^bookshopping', include('book.urls', namespace='book')),
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', obtain_jwt_token),
