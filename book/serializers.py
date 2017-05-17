@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from rest_framework import serializers
+from django.db.models import ObjectDoesNotExist
 
 from book.models import Book, Category, Comment
 
@@ -35,7 +36,7 @@ class BookItemSerializer(serializers.ModelSerializer):
         return obj.category.name
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentDisplaySerializer(serializers.ModelSerializer):
     user_id = serializers.SerializerMethodField()
     user_nickname = serializers.SerializerMethodField()
     user_avatar = serializers.SerializerMethodField()
@@ -62,3 +63,19 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_sub_comment_count(self, obj):
         return obj.children.count()
+
+
+class CommentPostSerializer(serializers.Serializer):
+    score = serializers.FloatField(min_value=0, max_value=5)
+    content = serializers.CharField()
+    parent_id = serializers.IntegerField()
+
+    def validate_parent_id(self, value):
+        if value == 0:
+            return value
+
+        try:
+            Comment.objects.get(pk=value)
+        except ObjectDoesNotExist as e:
+            raise serializers.ValidationError('父评论不存在')
+        return value

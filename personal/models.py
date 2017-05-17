@@ -28,10 +28,11 @@ class Order(models.Model):
 
 class BuyRecord(models.Model):
     """
-    购买表
+    购买记录表
     """
     user = models.ForeignKey(User, verbose_name='所属用户')
     book = models.ForeignKey(Book, verbose_name='所属图书')
+    price = models.FloatField('花费（书币）', default=0.0)
     timestamp = models.DateTimeField('购买日期', auto_now_add=True)
 
     def __unicode__(self):
@@ -39,25 +40,8 @@ class BuyRecord(models.Model):
 
     class Meta:
         db_table = 'buy_record'
-        verbose_name = '购买表'
-        verbose_name_plural = '购买表'
-
-
-class DownloadRecord(models.Model):
-    """
-    下载表
-    """
-    user = models.ForeignKey(User, verbose_name='所属用户')
-    book = models.ForeignKey(Book, verbose_name='所属图书')
-    timestamp = models.DateTimeField('下载时间', auto_now_add=True)
-
-    def __unicode__(self):
-        return '%s' % self.book
-
-    class Meta:
-        db_table = 'download_record'
-        verbose_name = '下载表'
-        verbose_name_plural = '下载表'
+        verbose_name = '购买记录表'
+        verbose_name_plural = '购买记录表'
 
 
 class ReadRecord(models.Model):
