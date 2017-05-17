@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from personal.serializers import DepositPostSerializer, DepositItemSerializer
-from personal.models import DepositRecord
+from personal.models import DepositRecord, Order
 
 
 class BalanceView(APIView):
@@ -38,6 +38,7 @@ class DepositListView(APIView):
         DepositRecord.objects.create(user=user, amount=amount, status=DepositRecord.STATUS_PAID)
         user.balance.add_balance(amount)
         user.balance.save()
+        Order.objects.create(user=user, amount=amount*100, name="充值", note="")
 
         return Response({
             'amount': amount,
