@@ -33,7 +33,9 @@ class IndividuationView(APIView):
             except ObjectDoesNotExist as e:
                 continue
             book_set.append(book)
-        return Response(RecommendationBookSerializer(book_set, many=True).data)
+        return Response({
+            "results": RecommendationBookSerializer(book_set, many=True).data,
+        })
 
 
 class RankView(APIView):
@@ -48,7 +50,7 @@ class RankView(APIView):
 
         proxy = xmlrpclib.ServerProxy(settings.RECOMMENDATION_URL)
         try:
-            result = proxy.popular_recommend(amount=amount)
+            result = proxy.popular_recommend()
         except Exception as e:
             return Response(data={'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -59,4 +61,6 @@ class RankView(APIView):
             except ObjectDoesNotExist as e:
                 continue
             book_set.append(book)
-        return Response(RecommendationBookSerializer(book_set, many=True).data)
+        return Response({
+            "results": RecommendationBookSerializer(book_set, many=True).data,
+        })
