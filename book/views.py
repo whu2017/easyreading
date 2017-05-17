@@ -14,7 +14,7 @@ from book.serializers import (
     BookListSerializer, BookQuerySerializer, BookItemSerializer, CommentDisplaySerializer, CommentPostSerializer,
 )
 from book.models import Book, Category, Comment
-from personal.models import BuyRecord
+from personal.models import BuyRecord, Order
 
 
 class BookPagination(PageNumberPagination):
@@ -167,6 +167,7 @@ class BuyView(APIView):
         user.balance.dec_balance(book.price / 100.0)
         user.balance.save()
         BuyRecord.objects.create(user=user, book=book, price=book.price)
+        Order.objects.create(user=user, amount=-book.price, name="购买图书：%s" % book.title, note="")
         return Response({
             'cost': book.price,
             'balance_book': user.balance.get_balance() * 100,

@@ -9,7 +9,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework import mixins, status
 
 from book.models import Book
-from personal.models import BuyRecord
+from personal.models import BuyRecord, ReadRecord
 from reading.serializers import ReadingProgressSerializer, BookmarkSerializer, BookmarkGetSerializer, ChapterSerializer
 from reading.models import ReadingProgress, Bookmark
 from lib.parser.epub import parse_structure, chapter_content
@@ -158,6 +158,9 @@ class ReadingProgressView(APIView):
             progress.save()
         else:
             progress = ReadingProgress.objects.create(user=user, book=book, chapter=chapter, paragraph=paragraph, word=word)
+
+        # 添加已读记录
+        ReadRecord.objects.get_or_create(user=user, book=book)
 
         return Response({
             "chapter": progress.chapter,
