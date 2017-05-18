@@ -18,6 +18,11 @@ def parse_structure(filepath):
     for item in epub.manifest.list:
         if item.tag.attributes.get('media-type') != 'application/xhtml+xml':
             continue
+        identifier = item.tag.attributes.get('id', '')
+        if not identifier:
+            continue
+        if len(_chapter_content(epub, identifier)) == 0:
+            continue
 
         content_list = BeautifulSoup(item.get_file(), 'lxml').body.contents
         chapter = None
@@ -34,7 +39,7 @@ def parse_structure(filepath):
 
         structure.append({
             'chapter': chapter,
-            'identifier': item.tag.attributes.get('id', ''),
+            'identifier': identifier,
         })
     return structure
 
@@ -47,6 +52,16 @@ def chapter_content(filepath, identifier):
     :return: ['段落1', '段落2', ...]
     """
     epub = Epub.from_file(filepath)
+    return _chapter_content(epub, identifier)
+
+
+def _chapter_content(epub, identifier):
+    """
+    内部函数
+    :param epub: epub 文件  
+    :param identifier: 章节标识符
+    :return: ['段落1', '段落2', ...]
+    """
     try:
         element = epub.manifest.getElementById(identifier)
     except Exception:
