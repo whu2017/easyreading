@@ -8,5 +8,5 @@ from notify.views import NotifyItemView, NotifyListView
 
 urlpatterns = [
     url(r'^$', NotifyListView.as_view(), name='list'),
-    url(r'^(?P<pk>[0-9]+)/$', NotifyItemView.as_view(), name='item'),
+    url(r'^/(?P<pk>[0-9]+)$', NotifyItemView.as_view(), name='item'),
 ]

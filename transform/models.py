@@ -21,7 +21,7 @@ class Transform(models.Model):
     )
 
     origin = models.FileField('原始文件', upload_to='transform/%Y/%m/%d/')
-    book = models.FileField('转换后文件', blank=True, null=True)
+    final = models.FileField('转换后文件', blank=True, null=True)
     status = models.IntegerField('当前状态', choices=STATUS, default=STATUS_PENDING)
     error_message = models.TextField('出错信息')
 

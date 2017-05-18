@@ -54,11 +54,13 @@ INSTALLED_APPS = [
     'users',
     'index',
     'transform',
-    'deposit',
     'notify',
     'check',
-    'bookshopping',
-    'paradoxvault',
+    'book',
+    'bookshelf',
+    'personal',
+    'reading',
+    'recommendation',
 ]
 
 MIDDLEWARE = [
@@ -103,6 +105,7 @@ DATABASES = {
     }
 }
 
+APPEND_SLASH = False
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -151,8 +154,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Celery
-CELERY_BROKER_URL = 'redis://oott.me:6379/1'
-CELERY_RESULT_BACKEND = 'redis://oott.me:6379/2'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/1'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/2'
 CELERY_DEFAULT_QUEUE = 'default'
 CELERY_DEFAULT_ROUTING_KEY = 'default'
 CELERY_TASK_RESULT_EXPIRES = 3600
@@ -233,7 +236,7 @@ SESSION_CACHE_ALIAS = "default"
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://oott.me:6379/0",
+        "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -281,6 +284,9 @@ SMTP_PASSWORD = 'Whu2017Test'.encode('utf8')
 FUNCTION_REGISTER = 'register'
 FUNCTION_UPDATE = 'update'
 FUNCTION_RESET = 'reset'
+
+# Recommendation
+RECOMMENDATION_URL = 'http://127.0.0.1:45213'
 
 # Django Suit
 SUIT_CONFIG = {

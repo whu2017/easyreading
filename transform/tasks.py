@@ -4,6 +4,7 @@ from __future__ import print_function, unicode_literals
 import os
 import logging
 import commands
+import time
 
 from django.db.models import ObjectDoesNotExist
 from django.conf import settings
@@ -16,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 @shared_task(name='transform.transform_file')
 def transform_file(pk, filename):
+    time.sleep(1)
     try:
         transform = Transform.objects.get(pk=pk)
     except ObjectDoesNotExist:
@@ -32,7 +34,7 @@ def transform_file(pk, filename):
         transform.error_message = str(e)
         transform.save()
         return
-    transform.book.name = filename + '.epub'
+    transform.final.name = filename + '.epub'
     transform.status = Transform.STATUS_FINISHED
     transform.save()
 
