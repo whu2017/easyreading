@@ -6,11 +6,18 @@ import xmlrpclib
 from django.conf import settings
 from django.db.models import ObjectDoesNotExist
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from book.models import Book
 from recommendation.serializers import RecommendationQuerySerializer, RecommendationBookSerializer
+
+
+class RecommendationPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
 
 
 class IndividuationView(APIView):
@@ -33,9 +40,11 @@ class IndividuationView(APIView):
             except ObjectDoesNotExist as e:
                 continue
             book_set.append(book)
-        return Response({
-            "results": RecommendationBookSerializer(book_set, many=True).data,
-        })
+
+        paginator = RecommendationPagination()
+        result_page = paginator.paginate_queryset(book_set, request)
+        serializer = RecommendationBookSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class RankView(APIView):
@@ -61,6 +70,8 @@ class RankView(APIView):
             except ObjectDoesNotExist as e:
                 continue
             book_set.append(book)
-        return Response({
-            "results": RecommendationBookSerializer(book_set, many=True).data,
-        })
+
+        paginator = RecommendationPagination()
+        result_page = paginator.paginate_queryset(book_set, request)
+        serializer = RecommendationBookSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)

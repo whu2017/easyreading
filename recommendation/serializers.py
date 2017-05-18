@@ -8,7 +8,7 @@ from book.models import Book
 
 
 class RecommendationQuerySerializer(serializers.Serializer):
-    amount = serializers.IntegerField(min_value=1)
+    amount = serializers.IntegerField(min_value=1, default=120)
 
 
 class RecommendationBookSerializer(serializers.ModelSerializer):
