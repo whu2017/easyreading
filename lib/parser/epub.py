@@ -15,16 +15,15 @@ def parse_structure(filepath):
     """
     structure = []
     epub = Epub.from_file(filepath)
-    for item in epub.manifest.list:
-        if item.tag.attributes.get('media-type') != 'application/xhtml+xml':
-            continue
-        identifier = item.tag.attributes.get('id', '')
+    for item in epub.spine:
+        identifier = item.tag.attributes.get('idref', '')
         if not identifier:
             continue
         if len(_chapter_content(epub, identifier)) == 0:
             continue
 
-        content_list = BeautifulSoup(item.get_file(), 'lxml').body.contents
+        element = epub.manifest.getElementById(identifier)
+        content_list = BeautifulSoup(element.get_file(), 'lxml').body.contents
         chapter = None
         for title in content_list:
             if type(title) in [str, NavigableString] and len(title.strip()) > 0:
