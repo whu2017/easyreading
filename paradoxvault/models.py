@@ -10,21 +10,22 @@ class Subject(models.Model):
     """
     科目
     """
-    name = models.CharField('科目名', max_length=50)
+    subject_name = models.CharField('科目名', max_length=50)
 
     def __unicode__(self):
-        return '%s' % self.name
+        return '%s' % self.subject_name
 
     class Meta:
         db_table = 'subjects'
         verbose_name = '科目表'
         verbose_name_plural = '科目表'
 
+
 class Difficulty(models.Model):
     """
     难度系数
     """
-    name = models.CharField('难度', max_length=30)
+    name = models.CharField('难度名', max_length=30)
     difficulty = models.IntegerField('难度系数')
 
     def __unicode__(self):
@@ -32,8 +33,8 @@ class Difficulty(models.Model):
 
     class Meta:
         db_table = 'difficulty'
-        verbose_name = '难度表'
-        verbose_name_plural = '难度表'
+        verbose_name = '难度系数表'
+        verbose_name_plural = '难度系数表'
 
 
 class FillBlanks(models.Model):
@@ -41,7 +42,7 @@ class FillBlanks(models.Model):
     填空题
     """
     question_type = "fill_blanks"
-    subjectId = models.ForeignKey(Subject, verbose_name='科目表')
+    subject = models.ForeignKey(Subject, verbose_name='科目')
     score = models.IntegerField('分值')
     question = models.TextField('题目')
     answer = models.CharField('答案', max_length=50)
@@ -61,7 +62,7 @@ class MultiSelection(models.Model):
     多选题
     """
     question_type = "multi_selection"
-    subjectId = models.ForeignKey(Subject, verbose_name='科目表')
+    subject = models.ForeignKey(Subject, verbose_name='科目')
     score = models.IntegerField('分值')
     question = models.TextField('题目')
     selectionA = models.TextField('选项A')
@@ -87,7 +88,7 @@ class SingleSelection(models.Model):
     选择题
     """
     question_type = "single_selection"
-    subjectId = models.ForeignKey(Subject, verbose_name='科目表')
+    subject = models.ForeignKey(Subject, verbose_name='科目')
     score = models.IntegerField('分值')
     question = models.TextField('题目')
     selectionA = models.TextField('选项A')
@@ -110,11 +111,11 @@ class Judge(models.Model):
     """
     判断题
     """
-    question_type = "judge"
-    subjectId = models.ForeignKey(Subject, verbose_name='科目表')
+    question_type = "judgement"
+    subject = models.ForeignKey(Subject, verbose_name='科目')
     score = models.IntegerField('分值')
     question = models.TextField('题目')
-    answer = models.BooleanField('答案')
+    answer = models.BooleanField('正确')
     difficulty = models.ForeignKey(Difficulty, verbose_name='难度')
 
     def __unicode__(self):

@@ -1,10 +1,10 @@
 # coding: utf-8
 
-from rest_framework import viewsets, filters
-from .models import Question
-from .serializers import QuestionSerializer
+from rest_framework import viewsets
+from .models import *
+from .serializers import *
 
 
-class QuestionViewSet(viewsets.ModelViewSet):
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
+class SubjectViewSet(viewsets.ModelViewSet):
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
