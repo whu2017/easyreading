@@ -37,7 +37,12 @@ class BookshelfView(APIView):
         book_id = serializer.validated_data['book_id']
 
         Bookshelf.objects.get_or_create(user=user, book_id=book_id)
-        BookshelfTimestamp.objects.update_or_create(user=user, update_timestamp=timezone.now())
+        try:
+            timestamp = BookshelfTimestamp.objects.get(user=user)
+            timestamp.update_timestamp = timezone.now()
+            timestamp.save()
+        except ObjectDoesNotExist:
+            timestamp = BookshelfTimestamp.objects.create(user=user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, *args, **kwargs):
