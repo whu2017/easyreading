@@ -4,6 +4,10 @@ from __future__ import unicode_literals
 
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import sys
 
 from users.models import User
 from transform.models import Transform
@@ -50,6 +54,16 @@ class Book(models.Model):
         db_table = 'book'
         verbose_name = '图书表'
         verbose_name_plural = '图书表'
+
+    def save(self, *args, **kwargs):
+        im = Image.open(self.cover)
+        output = BytesIO()
+        im = im.resize((1080, 1350))
+        im.save(output, format='JPEG', quality=100)
+        output.seek(0)
+        self.cover = InMemoryUploadedFile(output, 'ImageField', "%s.jpg" % self.cover.name.split('.')[0], 'image/jpeg',
+                                          sys.getsizeof(output), None)
+        super(Book, self).save(*args, **kwargs)
 
 
 class Comment(MPTTModel):
