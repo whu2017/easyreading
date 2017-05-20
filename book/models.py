@@ -56,13 +56,14 @@ class Book(models.Model):
         verbose_name_plural = '图书表'
 
     def save(self, *args, **kwargs):
-        im = Image.open(self.cover)
-        output = BytesIO()
-        im = im.resize((1080, 1350))
-        im.save(output, format='JPEG', quality=100)
-        output.seek(0)
-        self.cover = InMemoryUploadedFile(output, 'ImageField', "%s.jpg" % self.cover.name.split('.')[0], 'image/jpeg',
-                                          sys.getsizeof(output), None)
+        if self.cover:
+            im = Image.open(self.cover)
+            output = BytesIO()
+            im = im.resize((1080, 1350))
+            im.save(output, format='JPEG', quality=100)
+            output.seek(0)
+            self.cover = InMemoryUploadedFile(output, 'ImageField', "%s.jpg" % self.cover.name.split('.')[0], 'image/jpeg',
+                                              sys.getsizeof(output), None)
         super(Book, self).save(*args, **kwargs)
 
 
