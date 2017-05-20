@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from bs4 import BeautifulSoup
 from bs4.element import Tag, NavigableString
-from epubzilla.epubzilla import Epub
+from lib.parser.epubzilla import Epub
 
 
 def parse_structure(filepath):
