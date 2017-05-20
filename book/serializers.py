@@ -71,7 +71,7 @@ class CommentDisplaySerializer(serializers.ModelSerializer):
 
 
 class CommentPostSerializer(serializers.Serializer):
-    score = serializers.FloatField(min_value=0, max_value=5)
+    score = serializers.FloatField(min_value=0, max_value=5, default=0, required=False)
     content = serializers.CharField()
     parent_id = serializers.IntegerField()
 

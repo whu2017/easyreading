@@ -107,7 +107,7 @@ class CommentListView(APIView):
         except ObjectDoesNotExist as e:
             raise NotFound()
 
-        score = serializer.validated_data['score']
+        score = serializer.validated_data.get('score', 0.0)
         content = serializer.validated_data['content']
         parent_id = serializer.validated_data['parent_id']
 
