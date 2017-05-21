@@ -167,8 +167,6 @@ class PermissionBaseSerializer(Serializer):
     def _check_payload(self, token):
         try:
             payload = jwt_decode_handler(token)
-        except jwt.ExpiredSignature:
-            raise serializers.ValidationError('Token 已过期')
         except jwt.DecodeError:
             raise serializers.ValidationError('无法解析 Token')
         return payload
