@@ -115,6 +115,20 @@ class CommentListView(APIView):
             comment = Comment.objects.create(user=user, book=book, score=score, content=content)
         else:
             comment = Comment.objects.create(user=user, book=book, score=score, content=content, parent_id=parent_id)
+
+        # For test only
+        comment_set = Comment.objects.filter(book=book).values('score')
+        score_total = 0.0
+        score_count = 0
+        for item in comment_set:
+            score = item.get('score')
+            if score > 0:
+                score_count += 1
+                score_total += item.get('score')
+        score = score_total / score_count
+        book.score = score
+        book.save()
+
         return Response(CommentDisplaySerializer(comment).data)
 
 
