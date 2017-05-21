@@ -6,8 +6,8 @@ import jwt
 from django.contrib.auth import authenticate, get_user_model
 from django.conf import settings
 from rest_framework import serializers
-from rest_framework_jwt.settings import api_settings
 
+from lib.rest_framework_jwt.settings import api_settings
 from users.compat import get_username_field, Serializer
 
 
