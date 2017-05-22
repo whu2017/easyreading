@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+import base64
 
+from django.contrib.auth.models import AnonymousUser
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
@@ -9,11 +11,13 @@ from rest_framework.response import Response
 from rest_framework import status, generics, filters
 from rest_framework.exceptions import NotFound
 from django.db.models import ObjectDoesNotExist
+from django_redis import get_redis_connection
+from django.utils import timezone
 
 from book.serializers import (
     BookListSerializer, BookQuerySerializer, BookItemSerializer, CommentDisplaySerializer, CommentPostSerializer,
 )
-from book.models import Book, Category, Comment
+from book.models import Book, Category, Comment, SearchHistory
 from personal.models import BuyRecord, Order
 
 
@@ -26,7 +30,6 @@ class BookPagination(PageNumberPagination):
 class BookView(generics.ListAPIView):
 
     permission_classes = ()
-    authentication_classes = ()
     queryset = Book.objects.all()
     serializer_class = BookListSerializer
     filter_backends = (filters.SearchFilter, )
@@ -36,6 +39,25 @@ class BookView(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         serializer = BookQuerySerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
+
+        search_term = request.query_params.get('search')
+        if search_term is not None:
+            conn = get_redis_connection('default')
+            search_term = search_term.strip()
+
+            # add to redis
+            if search_term:
+                conn.zincrby('search_hot', base64.b64encode(search_term.encode('utf-8')), amount=1)
+
+            # add to db
+            if not isinstance(request.user, AnonymousUser) and search_term:
+                histories = SearchHistory.objects.filter(user=request.user, key=search_term)
+                if histories.exists():
+                    item = histories[0]
+                    item.timestamp = timezone.now()
+                    item.save()
+                else:
+                    SearchHistory.objects.create(user=request.user, key=search_term)
 
         category = serializer.validated_data.get('category', '')
         category_obj = None
@@ -185,4 +207,32 @@ class BuyView(APIView):
         return Response({
             'cost': book.price,
             'balance_book': user.balance.get_balance() * 100,
+        })
+
+
+class SearchHistoryView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        history = SearchHistory.objects.filter(user=request.user).order_by('-timestamp')[:10]
+        resp = []
+        for item in history:
+            resp.append(item.key)
+        return Response({
+            'results': resp,
+        })
+
+
+class SearchHottestView(APIView):
+
+    authentication_classes = ()
+    permission_classes = ()
+
+    def get(self, request, *args, **kwargs):
+        conn = get_redis_connection('default')
+        results = conn.zrange('search_hot', 0, 10, desc=True)
+        resp = []
+        for item in results:
+            resp.append(base64.b64decode(item).decode('utf-8'))
+        return Response({
+            'results': resp,
         })

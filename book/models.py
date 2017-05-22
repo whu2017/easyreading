@@ -95,7 +95,7 @@ class SearchHistory(models.Model):
     搜索历史表
     """
     user = models.ForeignKey(User, verbose_name='所属用户')
-    key = models.CharField('搜索关键字', max_length=128)
+    key = models.CharField('搜索关键字', max_length=128, db_index=True)
     timestamp = models.DateTimeField('搜索时间', auto_now_add=True)
 
     def __unicode__(self):

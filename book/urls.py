@@ -3,7 +3,10 @@
 from __future__ import unicode_literals
 from django.conf.urls import url
 
-from book.views import BookView, BookItemView, CommentListView, CommentItemView, CommentChildrenView, BuyView
+from book.views import (
+    BookView, BookItemView, CommentListView, CommentItemView, CommentChildrenView, BuyView,
+    SearchHistoryView, SearchHottestView,
+)
 
 
 urlpatterns = [
@@ -13,4 +16,6 @@ urlpatterns = [
     url(r'^/book/(?P<book_id>[0-9]+)/buy$', BuyView.as_view(), name='buy'),
     url(r'^/comment/(?P<comment_id>[0-9]+)$', CommentItemView.as_view(), name='comment_item'),
     url(r'^/comment/(?P<comment_id>[0-9]+)/children$', CommentChildrenView.as_view(), name='comment_children'),
+    url(r'^/search/hottest$', SearchHottestView.as_view(), name='search_hotest'),
+    url(r'^/search/history$', SearchHistoryView.as_view(), name='search_history'),
 ]
