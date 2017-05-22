@@ -42,6 +42,8 @@ class CheckView(APIView):
             })
 
         Check.objects.create(user=request.user, check_timestamp=now)
+        request.user.balance.add_balance(0.1)
+        request.user.balance.save()
         return Response({
             'status': 'ok',
         })
