@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
 from check.models import Check
+from users.models import User
 
 
 class CheckView(APIView):
@@ -40,7 +41,7 @@ class CheckView(APIView):
                 'status': 'repeat check',
             })
 
-        Check.objects.create(user=request.user)
+        Check.objects.create(user=request.user, check_timestamp=now)
         return Response({
             'status': 'ok',
         })
