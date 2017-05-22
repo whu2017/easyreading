@@ -88,3 +88,20 @@ class Comment(MPTTModel):
         db_table = 'comment'
         verbose_name = '评论表'
         verbose_name_plural = '评论表'
+
+
+class SearchHistory(models.Model):
+    """
+    搜索历史表
+    """
+    user = models.ForeignKey(User, verbose_name='所属用户')
+    key = models.CharField('搜索关键字', max_length=128)
+    timestamp = models.DateTimeField('搜索时间', auto_now_add=True)
+
+    def __unicode__(self):
+        return self.key
+
+    class Meta:
+        db_table = 'search_history'
+        verbose_name = '搜索历史'
+        verbose_name_plural = '搜索历史'
