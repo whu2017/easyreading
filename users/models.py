@@ -128,7 +128,7 @@ class UserBalance(models.Model):
         return '%.2f 元' % self.balance
 
     def get_balance(self):
-        return self.balance
+        return round(self.balance, 2)
 
     def add_balance(self, num):
         self.balance += num
