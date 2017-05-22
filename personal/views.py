@@ -24,7 +24,7 @@ class BalanceView(APIView):
         balance_rmb = request.user.balance.get_balance()
         return Response({
             'balance_rmb': balance_rmb,
-            'balance_book': balance_rmb * 100,
+            'balance_book': round(balance_rmb * 100, 2),
         })
 
 
