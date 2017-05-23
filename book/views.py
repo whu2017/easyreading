@@ -147,7 +147,10 @@ class CommentListView(APIView):
             if score > 0:
                 score_count += 1
                 score_total += item.get('score')
-        score = score_total / score_count
+        if score_count > 0:
+            score = score_total / score_count
+        else:
+            score = 0.0
         book.score = score
         book.save()
 
