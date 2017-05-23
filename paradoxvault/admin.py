@@ -6,31 +6,32 @@ from paradoxvault.models import *
 
 
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('subject_name',)
 
 
 class DifficultyAdmin(admin.ModelAdmin):
     list_display = ('name', 'difficulty')
 
 
-class SingleSelectionAdmin(admin.ModelAdmin):
-    list_display = ('subject', 'question', 'score', 'selectionA', 'selectionB', 'selectionC', 'selectionD', 'answer', 'difficulty')
+class QuestionBankAdmin(admin.ModelAdmin):
+    list_display = ('title', 'subject', 'author', 'introduction', 'price', 'score',
+                    'question_number', 'create_timestamp', 'update_timestamp')
 
 
-class MultiSelectionAdmin(admin.ModelAdmin):
-    list_display = ('subject', 'question', 'score', 'selectionA', 'selectionB', 'selectionC', 'selectionD', 'selectionE', 'selectionF', 'answer', 'difficulty')
+class SelectionOptionAdmin(admin.ModelAdmin):
+    list_display = ('selection_name', 'option')
 
 
-class JudgementAdmin(admin.ModelAdmin):
-    list_display = ('subject', 'question', 'score', 'answer', 'difficulty')
+class SelectionAdmin(admin.ModelAdmin):
+    list_display = ('question_type', 'question_bank', 'grade', 'difficulty', 'question', 'answer')
 
 
-class FillBlanksAdmin(admin.ModelAdmin):
-    list_display = ('subject', 'question', 'score', 'answer', 'difficulty')
+class QuestionCommentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'question_bank', 'score', 'content', 'timestamp')
 
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Difficulty, DifficultyAdmin)
-admin.site.register(SingleSelection, SingleSelectionAdmin)
-admin.site.register(MultiSelection, MultiSelectionAdmin)
-admin.site.register(Judge, JudgementAdmin)
-admin.site.register(FillBlanks, FillBlanksAdmin)
+admin.site.register(QuestionBank, QuestionBankAdmin)
+admin.site.register(QuestionComment, QuestionCommentAdmin)
+admin.site.register(Selection, SelectionAdmin)
+admin.site.register(SelectionOptions, SelectionOptionAdmin)

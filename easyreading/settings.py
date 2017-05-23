@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'personal',
     'reading',
     'recommendation',
+    'paradoxvault',
 ]
 
 MIDDLEWARE = [
