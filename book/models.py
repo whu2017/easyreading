@@ -89,6 +89,25 @@ class Comment(MPTTModel):
         verbose_name = '评论表'
         verbose_name_plural = '评论表'
 
+    def save(self, *args, **kwargs):
+        super(Comment, self).save(*args, **kwargs)
+
+        # For test only
+        comment_set = Comment.objects.filter(book=self.book).values('score')
+        score_total = 0.0
+        score_count = 0
+        for item in comment_set:
+            score = item.get('score')
+            if score > 0:
+                score_count += 1
+                score_total += item.get('score')
+        if score_count > 0:
+            score = score_total / score_count
+        else:
+            score = 0.0
+        self.book.score = score
+        self.book.save()
+
 
 class SearchHistory(models.Model):
     """
