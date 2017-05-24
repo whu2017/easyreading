@@ -51,6 +51,7 @@ class BookmarkSerializer(serializers.Serializer):
     chapter = serializers.CharField()
     paragraph = serializers.IntegerField(min_value=0)
     word = serializers.IntegerField(min_value=0)
+    detail = serializers.CharField()
 
 
 class BookmarkGetSerializer(serializers.Serializer):

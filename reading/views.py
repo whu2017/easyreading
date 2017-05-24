@@ -109,9 +109,11 @@ class BookmarkView(APIView):
         chapter = serializer.validated_data['chapter']
         paragraph = serializer.validated_data['paragraph']
         word = serializer.validated_data['word']
+        detail = serializer.validated_data['detail']
 
-        bookmark = Bookmark.objects.create(user=user, book=book, chapter=chapter, paragraph=paragraph, word=word, detail="")
+        bookmark = Bookmark.objects.create(user=user, book=book, chapter=chapter, paragraph=paragraph, word=word, detail=detail)
         return Response({
+            "id": bookmark.pk,
             "chapter": bookmark.chapter,
             "paragraph": bookmark.paragraph,
             "word": bookmark.word,
